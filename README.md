@@ -4,20 +4,24 @@ Tento repozitář má sloužit jako **šablona/checklist pro lokální běh Odoo
 
 ## Interaktivní instalační checklist
 
-**[Otevřít interaktivní instalační checklist](community_local_installation.html#installation-checklist)** (`community_local_installation.html`)
+Průvodce je soubor [`community_local_installation.html`](community_local_installation.html) — samostatná stránka s postupem pro **macOS** a **Windows**, rozbalovacími kroky a zaškrtáváním.
 
-Soubor je samostatná stránka s odděleným postupem pro **macOS** a **Windows**. Otevři ho dvojklikem v systému souborů, nebo z editoru přes náhled / Live Server.
+**Běžná cesta:** po stažení nebo naklonování repozitáře soubor otevři v prohlížeči — dvojklikem ve složce, nebo náhled / Live Server v editoru.
 
-Pokud nemáš licenční přístup k Odoo Enterprise modulům, můžeš si tímto způsobem stále zprovoznit lokální Odoo 18, ale pouze ve verzi Community.
+**Volitelně z prohlížeče bez klonu:** u tohoto repa je zapnutý [GitHub Pages](https://pages.github.com/) náhled — **[otevřít průvodce online](https://chris-webst.github.io/odoo18-project/community_local_installation.html#installation-checklist)**.
+
+Bez licenčního přístupu k Odoo Enterprise můžeš podle návodu spustit Odoo 18 ve verzi **Community**; Enterprise je v průvodci volitelný krok.
 
 ## Co je v repozitáři (v kostce)
 
-- **[`docker-compose.yml`](docker-compose.yml)** — Říká Dockeru, aby ti na počítači spustil Odoo (web) a k němu Postgres databázi. Řádek se složkou `src/` necháváš zakomentovaný, dokud nemáš stažený Enterprise kód.
+- **[`community_local_installation.html`](community_local_installation.html)** — Interaktivní průvodce (Docker, složky, Enterprise atd.).
 
-- **[`config/odoo.conf`](config/odoo.conf)** — Základní nastavení Odoo (např. kde má hledat moduly). **Než začneš pracovat „naplno“, změň si heslo správce databází** v položce `admin_passwd`.
+- **[`docker-compose.yml`](docker-compose.yml)** — Spouští Odoo (web) a PostgreSQL. Řádek se `src/` nechávej zakomentovaný, dokud nemáš stažený Enterprise kód.
 
-- **[`.gitignore`](.gitignore)** — Říká gitu, co se nemá commitovat: mimo jiné **`src/`** (Enterprise), soubory s hesly (`.env`, …) a běžný nepořádek (logy, cache).
+- **[`config/odoo.conf`](config/odoo.conf)** — Základní nastavení Odoo. **Před ostrým použitím změň heslo** v `admin_passwd`.
 
-- **`addons/`** — Složka pro tvoje vlastní custom moduly.
+- **[`.gitignore`](.gitignore)** — Co se nemá commitovat (mimo jiné obsah `src/` kromě značky složky, hesla v `.env`, logy, cache).
 
-- **`src/` (jen ve tvém počítači, nikam neuploaduješ)** — Sem patří **Enterprise moduly** z oficiálního repozitáře Odoo ([github.com/odoo/enterprise](https://github.com/odoo/enterprise). Kód podléhá licenci Odoo SA a **nesmíš ho nahrávat do veřejného repozitáře**; proto je složka `src/` v [`.gitignore`](.gitignore). Až máš `src/` vyplněné, v `docker-compose.yml` odkomentuješ příslušný svazek, jak je to popsáno v HTML návodu.
+- **`addons/`** — Vlastní moduly (v repu je prázdná struktura přes `.gitkeep`).
+
+- **`src/`** — Sem lokálně dáváš **Enterprise** z [github.com/odoo/enterprise](https://github.com/odoo/enterprise); do veřejného repa se kód nenahrává (licence). Po vyplnění odkomentuješ svazek v `docker-compose.yml` podle průvodce.
