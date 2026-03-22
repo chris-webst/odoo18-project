@@ -1,0 +1,38 @@
+# ── HESLA A CITLIVÉ SOUBORY ─────────────────────────────────────────────────
+# Soubory s hesly a API klíči nesmí NIKDY skončit na GitHubu.
+# Pokud používáš .env soubor pro proměnné prostředí, přidej ho sem.
+.env
+.env.*
+*.secret
+
+# ── ENTERPRISE KÓD (src/) ────────────────────────────────────────────────────
+# Enterprise kód patří Odoo SA — jeho nahrání na GitHub porušuje licenci.
+# Složku src/ naklonuješ lokálně z github.com/odoo/enterprise,
+# ale do tohoto repozitáře nepatří.
+src/
+
+# ── MACOS SYSTÉMOVÉ SOUBORY ──────────────────────────────────────────────────
+# macOS vytváří tyto soubory automaticky — pro projekt jsou bezcenné.
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# ── LOGY A DOČASNÉ SOUBORY ───────────────────────────────────────────────────
+# Logy se generují za běhu a jsou specifické pro každé prostředí.
+*.log
+*.log.*
+logs/
+
+# Dočasné soubory editorů
+*.swp
+*.swo
+*~
+.vscode/settings.json
+
+# Python cache (vzniká při vývoji vlastních modulů v addons/)
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/

@@ -1,0 +1,26 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=odoo
+      - POSTGRES_USER=odoo
+    volumes:
+      - odoo-db-data:/var/lib/postgresql/data
+
+  web:
+    image: odoo:18.0
+    depends_on:
+      - db
+    ports:
+      - "127.0.0.1:8069:8069"
+    volumes:
+      - ./addons:/mnt/extra-addons # Specifying localhost determination for tying usage to this hardware and not others on the network
+      - ./config:/etc/odoo
+      # - ./src:/usr/lib/python3/dist-packages/odoo # Zatím zakomentováno, než stáhneme kód
+    environment:
+      - HOST=db
+      - USER=odoo
+      - PASSWORD=odoo
+volumes:
+  odoo-db-data:
