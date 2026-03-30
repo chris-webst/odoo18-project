@@ -11,6 +11,12 @@
 # ale do tohoto repozitáře nepatří.
 src/
 
+# ── CUSTOM MODULY (addons/) ──────────────────────────────────────────────────
+# Pokud vyvíjíš vlastní moduly, umístíš ji do této složky.
+# Tyto moduly jsou specifické pro tvůj projekt a neměly by být veřejně dostupné.
+# V případě potřeby odkomentuj a nahrávej pouze do soukromých repozitářů.
+addons/
+
 # ── MACOS SYSTÉMOVÉ SOUBORY ──────────────────────────────────────────────────
 # macOS vytváří tyto soubory automaticky — pro projekt jsou bezcenné.
 .DS_Store
