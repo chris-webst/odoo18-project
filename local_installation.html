@@ -1,0 +1,1839 @@
+<!DOCTYPE html>
+<html lang="cs">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Odoo 18 — Instalační průvodce</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+    :root {
+      --bg: #0f1117;
+      --bg2: #181c27;
+      --bg3: #1e2436;
+      --bg4: #252b3d;
+      --border: #2d3450;
+      --border2: #3a4268;
+      --text: #e2e6f0;
+      --text2: #8b92a8;
+      --text3: #565e78;
+      --blue: #4f8ef7;
+      --blue-bg: #1a2540;
+      --blue-border: #2d4a7a;
+      --green: #3ecf8e;
+      --green-bg: #0f2a1e;
+      --green-border: #1a4a34;
+      --amber: #f5a623;
+      --amber-bg: #2a1f0a;
+      --amber-border: #4a3510;
+      --red: #f5535a;
+      --red-bg: #2a0f12;
+      --red-border: #4a1a1e;
+      --purple: #a78bfa;
+      --purple-bg: #1e1a30;
+      --mono: 'IBM Plex Mono', monospace;
+      --sans: 'DM Sans', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      padding: 2rem 2rem 1.5rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .header h1 {
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: var(--text);
+      letter-spacing: -0.01em;
+      margin-bottom: 1rem;
+    }
+
+    .header h1 span {
+      color: var(--blue);
+    }
+
+    .os-tabs {
+      display: flex;
+      gap: 6px;
+    }
+
+    .os-tab {
+      padding: 6px 16px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg3);
+      color: var(--text2);
+      font-family: var(--sans);
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .os-tab:hover {
+      border-color: var(--border2);
+      color: var(--text);
+    }
+
+    .os-tab.active {
+      background: var(--blue-bg);
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    /* ── LAYOUT ── */
+    .main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem 2.5rem 4rem;
+    }
+
+    .os-content {
+      display: none;
+    }
+
+    .os-content.active {
+      display: block;
+    }
+
+    /* ── PHASE ── */
+    .phase {
+      margin-bottom: 2rem;
+    }
+
+    .phase-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text3);
+      margin-bottom: 0.75rem;
+      padding-left: 2px;
+    }
+
+    /* ── STEP ── */
+    .step {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 6px;
+      background: var(--bg2);
+      transition: border-color 0.15s;
+    }
+
+    .step.done {
+      border-color: var(--green-border);
+      background: var(--bg2);
+    }
+
+    .step.done .step-num {
+      background: var(--green-bg) !important;
+      color: var(--green) !important;
+      border-color: var(--green-border) !important;
+    }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s;
+    }
+
+    .step-header:hover {
+      background: var(--bg3);
+    }
+
+    .step-num {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 1px solid var(--border2);
+      background: var(--bg3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: var(--text2);
+      flex-shrink: 0;
+      transition: all 0.15s;
+    }
+
+    .step-num.blue {
+      background: var(--blue-bg);
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    .step-num.amber {
+      background: var(--amber-bg);
+      border-color: var(--amber);
+      color: var(--amber);
+    }
+
+    .step-num.green {
+      background: var(--green-bg);
+      border-color: var(--green);
+      color: var(--green);
+    }
+
+    .step-num.red {
+      background: var(--red-bg);
+      border-color: var(--red);
+      color: var(--red);
+    }
+
+    .step-num.purple {
+      background: var(--purple-bg);
+      border-color: var(--purple);
+      color: var(--purple);
+    }
+
+    .step-info {
+      flex: 1;
+    }
+
+    .step-name {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .step-hint {
+      font-size: 0.75rem;
+      color: var(--text3);
+      margin-top: 1px;
+    }
+
+    .step-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .step-cb {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      border: 1px solid var(--border2);
+      background: var(--bg3);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      flex-shrink: 0;
+      font-size: 11px;
+      color: transparent;
+    }
+
+    .step-cb:hover {
+      border-color: var(--green);
+    }
+
+    .step-cb.checked {
+      background: var(--green-bg);
+      border-color: var(--green);
+      color: var(--green);
+    }
+
+    .step-arrow {
+      font-size: 0.65rem;
+      color: var(--text3);
+      transition: transform 0.2s;
+    }
+
+    .step-arrow.open {
+      transform: rotate(90deg);
+    }
+
+    .step-body {
+      display: none;
+      padding: 0 14px 16px 52px;
+      border-top: 1px solid var(--border);
+    }
+
+    .step-body.open {
+      display: block;
+    }
+
+    /* ── BODY CONTENT ── */
+    .step-body p {
+      font-size: 0.85rem;
+      color: var(--text2);
+      line-height: 1.7;
+      margin-top: 12px;
+    }
+
+    .step-body p strong {
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .step-body ol {
+      padding-left: 18px;
+      margin-top: 10px;
+    }
+
+    .step-body ol li {
+      font-size: 0.85rem;
+      color: var(--text2);
+      line-height: 1.7;
+      margin-bottom: 4px;
+    }
+
+    .step-body ol li strong {
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    /* ── CODE BLOCKS ── */
+    .cmd {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      background: var(--bg);
+      border: 1px solid var(--border2);
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin-top: 10px;
+      display: block;
+      color: var(--text);
+      line-height: 1.9;
+      white-space: pre;
+      overflow-x: auto;
+      position: relative;
+    }
+
+    .cmd .c {
+      color: var(--text3);
+    }
+
+    .cmd .kw {
+      color: var(--blue);
+    }
+
+    .cmd .str {
+      color: var(--green);
+    }
+
+    .cmd .num {
+      color: var(--amber);
+    }
+
+    .output {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      background: var(--green-bg);
+      border: 1px solid var(--green-border);
+      border-radius: 0 8px 8px 0;
+      border-left: 3px solid var(--green);
+      padding: 10px 14px;
+      margin-top: 8px;
+      color: #a0e8c8;
+      line-height: 1.7;
+      white-space: pre;
+    }
+
+    /* ── CALLOUT BOXES ── */
+    .box {
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-top: 12px;
+      font-size: 0.8rem;
+      line-height: 1.6;
+    }
+
+    .box strong {
+      font-weight: 500;
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    .box-ok {
+      background: var(--green-bg);
+      border: 1px solid var(--green-border);
+      color: #7dd9a8;
+    }
+
+    .box-ok strong {
+      color: var(--green);
+    }
+
+    .box-warn {
+      background: var(--amber-bg);
+      border: 1px solid var(--amber-border);
+      color: #c8a060;
+    }
+
+    .box-warn strong {
+      color: var(--amber);
+    }
+
+    .box-tip {
+      background: var(--blue-bg);
+      border: 1px solid var(--blue-border);
+      color: #7aacee;
+    }
+
+    .box-tip strong {
+      color: var(--blue);
+    }
+
+    .box-danger {
+      background: var(--red-bg);
+      border: 1px solid var(--red-border);
+      color: #d08080;
+    }
+
+    .box-danger strong {
+      color: var(--red);
+    }
+
+    /* ── TWO-COL ── */
+    .two-col {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .info-card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      background: var(--bg3);
+    }
+
+    .info-card-title {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .info-card-body {
+      font-size: 0.78rem;
+      color: var(--text2);
+      line-height: 1.6;
+    }
+
+    /* ── PASSWORD GRID ── */
+    .pw-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .pw-card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      background: var(--bg3);
+    }
+
+    .pw-badge {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-weight: 600;
+      font-family: var(--mono);
+      letter-spacing: 0.05em;
+      border-radius: 4px;
+      padding: 2px 8px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .pw-card .pw-name {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 3px;
+    }
+
+    .pw-card .pw-where {
+      font-size: 0.7rem;
+      color: var(--text3);
+      font-family: var(--mono);
+      margin-bottom: 8px;
+    }
+
+    .pw-card .pw-desc {
+      font-size: 0.75rem;
+      color: var(--text2);
+      line-height: 1.55;
+    }
+
+    /* ── TERMINAL TABLE ── */
+    .term-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      font-size: 0.8rem;
+    }
+
+    .term-table th {
+      text-align: left;
+      padding: 7px 12px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text3);
+      background: var(--bg3);
+      border: 1px solid var(--border);
+    }
+
+    .term-table td {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      background: var(--bg2);
+      color: var(--text2);
+      line-height: 1.5;
+      vertical-align: top;
+    }
+
+    .term-table tr:hover td {
+      background: var(--bg3);
+    }
+
+    .term-table td code {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      background: var(--bg);
+      border: 1px solid var(--border2);
+      border-radius: 3px;
+      padding: 1px 5px;
+      color: var(--blue);
+    }
+
+    .term-table td strong {
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    /* ── DIVIDER ── */
+    .sep {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 1.5rem 0;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      .header {
+        padding: 1.2rem 1rem 1rem;
+      }
+
+      .main {
+        padding: 1.2rem 1rem 3rem;
+      }
+
+      .step-body {
+        padding-left: 14px;
+      }
+
+      .pw-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    <div class="header-inner">
+      <h1>Odoo 18 Enterprise — <span>Instalační průvodce</span></h1>
+      <div class="os-tabs">
+        <button class="os-tab active" onclick="switchOS('mac',this)">macOS</button>
+        <button class="os-tab" onclick="switchOS('win',this)">Windows</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="main" id="installation-checklist">
+
+    <!-- ════════════════════════════════ macOS ════════════════════════════════ -->
+    <div class="os-content active" id="os-mac">
+
+      <div class="phase">
+        <div class="phase-label">Nejdříve — co vlastně instalujeme</div>
+
+        <div class="step" id="mac-s0">
+          <div class="step-header" onclick="toggle('mac-s0')">
+            <div class="step-num purple">?</div>
+            <div class="step-info">
+              <div class="step-name">Odoo vs. databáze — klíčový rozdíl</div>
+              <div class="step-hint">Přečti si před začátkem, ušetří ti to zmatek</div>
+            </div>
+            <div class="step-right">
+              <div class="step-cb" onclick="check(event,'mac-s0')"></div>
+              <div class="step-arrow">▶</div>
+            </div>
+          </div>
+          <div class="step-body">
+            <p>Spousta lidí si myslí, že Odoo a databáze je totéž. Není. Jsou to dva samostatné programy, které
+              spolupracují.</p>
+            <div class="two-col">
+              <div class="info-card">
+                <div class="info-card-title">Odoo = webová aplikace (frontend)</div>
+                <div class="info-card-body">To, co vidíš v prohlížeči — tlačítka, formuláře, reporty, grafy. Odoo
+                  přijímá tvoje akce, zpracovává logiku a zobrazuje výsledky. Samo o sobě ale nic neukládá.</div>
+              </div>
+              <div class="info-card">
+                <div class="info-card-title">PostgreSQL = zálohovací systém (backend)</div>
+                <div class="info-card-body">Program, který ukládá všechna data na disk — zákazníky, faktury, produkty,
+                  pohyby skladu. Je to trezor na data bez vlastního rozhraní. Odoo do něj zapisuje a čte z něj.</div>
+              </div>
+            </div>
+            <p>Proč je to důležité? Když něco nefunguje, musíme vědět kde hledat — jestli je problém ve frontend vrstvě
+              (Odoo — zobrazení, logika) nebo v backend úložišti (PostgreSQL — data, připojení). Docker spustí oba
+              programy najednou a propojí je.</p>
+            <div class="box box-ok"><strong>Shrnutí</strong>Odoo = co vidíš. PostgreSQL = kde to žije. Docker = kdo to
+              spouští.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-label">Fáze 1 — Software</div>
+
+        <div class="step" id="mac-s1">
+          <div class="step-header" onclick="toggle('mac-s1')">
+            <div class="step-num blue">1</div>
+            <div class="step-info">
+              <div class="step-name">Docker Desktop — stažení a instalace</div>
+              <div class="step-hint">Program, který spouští Odoo a databázi izolovaně</div>
+            </div>
+            <div class="step-right">
+              <div class="step-cb" onclick="check(event,'mac-s1')"></div>
+              <div class="step-arrow">▶</div>
+            </div>
+          </div>
+          <div class="step-body">
+            <p><strong>Co je Docker?</strong> Docker umí na tvém počítači spustit izolované "minipočítače" zvané
+              kontejnery. Jeden bude Odoo, druhý databáze PostgreSQL. Nemusíš nic složitě instalovat — vše je zabalené
+              uvnitř kontejnerů a systém zůstane čistý.</p>
+            <p><strong>Stažení:</strong> Jdi na <strong>docker.com/products/docker-desktop</strong>. Nejdříve zjisti,
+              jaký chip máš — klikni na logo Apple v systémové liště macOS (černá lišta úplně nahoře na obrazovce, ne
+              lišta samotné aplikace) → "O tomto Macu". Pokud vidíš "Apple M1/M2/M3/M4", stáhni <strong>Mac with Apple
+                chip</strong>. Pokud "Intel", stáhni <strong>Mac with Intel chip</strong>.</p>
+            <p><strong>Instalace:</strong> Otevři stažený soubor .dmg a přetáhni Docker do složky Aplikace. Spusť Docker
+              z Launchpadu. Při prvním spuštění tě macOS požádá o heslo — zadej heslo ke svému uživatelskému účtu na
+              tomto zařízení (heslo, které používáš k přihlášení do Macu, nikoliv Apple ID).</p>
+            <p><strong>Jak poznáš, že Docker běží:</strong> V systémové liště macOS (černá lišta úplně nahoře) se objeví
+              malá ikonka velryby. Klikni na ni — pokud vidíš <strong>"Docker Desktop is running"</strong>, vše je v
+              pořádku. Pokud je u ikonky vykřičník, Docker ještě startuje nebo čeká na potvrzení podmínek — klikni na
+              ikonku velryby a otevři okno Docker Desktop, kde uvidíš popis problému.</p>
+            <div class="box box-ok"><strong>Hotovo, když:</strong> Ikonka velryby v systémové liště macOS je bez
+              vykřičníku a kliknutím zobrazí "Docker Desktop is running".</div>
+          </div>
+        </div>
+
+        <div class="step" id="mac-s2">
+          <div class="step-header" onclick="toggle('mac-s2')">
+            <div class="step-num blue">2</div>
+            <div class="step-info">
+              <div class="step-name">Cursor — stažení, instalace a přihlášení</div>
+              <div class="step-hint">Editor kódu s AI — pracujeme tu celou dobu</div>
+            </div>
+            <div class="step-right">
+              <div class="step-cb" onclick="check(event,'mac-s2')"></div>
+              <div class="step-arrow">▶</div>
+            </div>
+          </div>
+          <div class="step-body">
+            <p><strong>Co je Cursor?</strong> Editor kódu s vestavěnou AI. Budeme ho používat jako centrální místo —
+              odsud spouštíme příkazy v terminálu, upravujeme konfigurační soubory a ptáme se AI na problémy.</p>
+            <p><strong>Stažení a instalace:</strong> Jdi na <strong>cursor.com</strong>, klikni Download a stáhni verzi
+              pro macOS. Otevři .dmg a přetáhni do Aplikací.</p>
+            <p><strong>Přihlášení:</strong> Po spuštění Cursor zobrazí přihlašovací obrazovku — přihlas se přes GitHub
+              (tlačítko "Continue with GitHub"). Pokud GitHub účet nemáš, vytvoř si ho zdarma na github.com — budeš ho
+              potřebovat i pro stažení Enterprise kódu Odoo.</p>
+            <p><strong>Nastavení rozložení panelů:</strong> Průzkumník souborů může být na pravé straně. Klikni na něj
+              pravým tlačítkem a vyber <strong>"Move Primary Side Bar to Left"</strong>. AI chat otevřeš zkratkou
+              <strong>Cmd+L</strong> a přetáhneš ho na pravou stranu.
+            </p>
+            <div class="box box-ok"><strong>Hotovo, když:</strong> Cursor je otevřený, jsi přihlášen přes GitHub a
+              průzkumník souborů je v levém panelu.</div>
+          </div>
+        </div>
+
+        <div class="step" id="mac-s3">
+          <div class="step-header" onclick="toggle('mac-s3')">
+            <div class="step-num blue">3</div>
+            <div class="step-info">
+              <div class="step-name">Rozšíření a automatické formátování</div>
+              <div class="step-hint">Docker extension, Python, Format on Save</div>
+            </div>
+            <div class="step-right">
+              <div class="step-cb" onclick="check(event,'mac-s3')"></div>
+              <div class="step-arrow">▶</div>
+            </div>
+          </div>
+          <div class="step-body">
+            <p><strong>Instalace rozšíření:</strong> Stiskni <strong>Cmd+Shift+X</strong> — otevře se panel Extensions.
+              Do vyhledávacího pole zadej název a klikni Install.</p>
+            <ol>
+              <li>Nainstaluj rozšíření <strong>Docker</strong> (autor Microsoft) — přidá tlačítka pro ovládání
+                kontejnerů přímo z editoru.</li>
+              <li>Nainstaluj rozšíření <strong>Python</strong> (autor Microsoft) — pro správnou práci se soubory Odoo.
+              </li>
+            </ol>
+            <p><strong>Zapnutí automatického formátování:</strong> Otevři nastavení zkratkou <strong>Cmd+,</strong>
+              (čárka). Do vyhledávacího pole napiš <code>format on save</code> a zaškrtni <strong>Editor: Format On
+                Save</strong>. Díky tomu se YAML soubory při uložení automaticky opraví — špatné odsazení je nejčastější
+              příčina chyb v konfiguračních souborech.</p>
+            <div class="box box-ok"><strong>Hotovo, když:</strong> V levém panelu Cursoru vidíš ikonku velryby (Docker
+              rozšíření) a Format on Save je zaškrtnuté v nastavení.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-label">Fáze 2 — Struktura projektu</div>
+
+        <div class="step" id="mac-s4">
+          <div class="step-header" onclick="toggle('mac-s4')">
+            <div class="step-num amber">4</div>
+            <div class="step-info">
+              <div class="step-name">Terminál — vytvoření složek projektu</div>
+              <div class="step-hint">Příkazový řádek — sem píšeme instrukce pro počítač</div>
+            </div>
+            <div class="step-right">
+              <div class="step-cb" onclick="check(event,'mac-s4')"></div>
+              <div class="step-arrow">▶</div>
+            </div>
+          </div>
+          <div class="step-body">
+            <p><strong>Co je terminál?</strong> Okno, kam píšeš textové příkazy a počítač je vykoná — místo klikání myší
+              říkáš počítači přímo co má dělat. <strong>Otevření v Cursoru:</strong> klikni v horním menu na
+              <strong>Terminal → New Terminal</strong> nebo stiskni <strong>Ctrl+`</strong> (Ctrl a zpětný apostrof —
+              klávesa vlevo od jedničky). Dole se otevře tmavý panel — to je terminál.
+            </p>
+            <p><strong>Vytvoření složek:</strong> Piš příkazy přesně jak jsou napsané a po každém stiskni Enter.</p>
+            <div class="cmd"><span class="c"># Přejdi na Plochu (Desktop)</span>
+cd ~/Desktop
+
+<span class="c"># Vytvoř hlavní složku projektu</span>
+mkdir odoo18-project
+
+<span class="c"># Vstup do nové složky</span>
+cd odoo18-project
+
+<span class="c"># Vytvoř tři podsložky najednou:
+  # addons = vlastní moduly (vývoj na míru)
+  # config = konfigurační soubory Odoo
+  # src = Enterprise kód stažený z GitHubu</span>
+mkdir addons config src</div>
+            <p><strong>Otevření projektu v Cursoru:</strong></p>
+            <div class="cmd"><span class="c"># Tečka = "tato složka" — Cursor otevře aktuální adresář</span>
+cursor .</div>
+            <div class="box box-ok"><strong>Hotovo, když:</strong> V levém panelu Cursoru vidíš složky addons, config a
+              src.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-label">Fáze 3 — Konfigurační soubory</div>
+
+        <div class="step" id="mac-s5">
+          <div class="step-header" onclick="toggle('mac-s5')">
+            <div class="step-num amber">5</div>
+            <div class="step-info">
+              <div class="step-name">docker-compose.yml — recept pro Docker</div>
+              <div class="step-hint">Říká Dockeru co spustit, jak propojit a jak zabezpečit</div>
+            </div>
+            <div class="step-right">
+              <div class="step-cb" onclick="check(event,'mac-s5')"></div>
+              <div class="step-arrow">▶</div>
+            </div>
+          </div>
+          <div class="step-body">
+            <p><strong>Co je tento soubor?</strong> Textový "recept", který Dockeru říká: spusť backend (PostgreSQL) a
+              frontend (Odoo 18), propoj je dohromady, zpřístupni Odoo na portu 8069, a data ukládej trvale na disk. Bez
+              tohoto souboru Docker neví co má dělat.</p>
+            <p><strong>Vytvoření souboru:</strong></p>
+            <div class="cmd"><span class="c"># Příkaz touch vytvoří prázdný soubor</span>
+touch docker-compose.yml</div>
+            <p>V levém panelu Cursoru klikni na <strong>docker-compose.yml</strong> a vlož celý tento obsah (označ vše
+              Cmd+A, smaž a vlož):</p>
+            <div class="cmd"><span class="c"># Zde definujeme všechny "stroje" (services), které Docker spustí</span>
+services:
+
+  <span class="c"># ── BACKEND: DATABÁZE ──────────────────────────────────────────
+  # PostgreSQL ukládá všechna data Odoo na disk.
+  # Je to zálohovací systém bez vlastního UI — čistý trezor na data.</span>
+  db:
+    image: postgres:15 <span class="c"># Přesná verze PostgreSQL, kterou Odoo 18 potřebuje</span>
+    environment:
+      - POSTGRES_DB=postgres <span class="c"># Název výchozí databáze</span>
+      - POSTGRES_USER=odoo <span class="c"># Uživatel, přes kterého se Odoo připojuje k DB</span>
+      - POSTGRES_PASSWORD=odoo <span class="c"># Heslo tohoto uživatele (interní, ty ho nikdy nezadáváš)</span>
+    volumes:
+      <span class="c"># Data se ukládají do pojmenovaného svazku.
+      # Díky tomu nepřijdeš o data ani když Docker vypneš.</span>
+      - odoo-db-data:/var/lib/postgresql/data
+
+  <span class="c"># ── FRONTEND: ODOO ─────────────────────────────────────────────
+  # Odoo je webová aplikace — to co vidíš v prohlížeči.
+  # Čte data z backendu (PostgreSQL) a zobrazuje je jako UI.</span>
+  web:
+    image: odoo:18.0 <span class="c"># Oficiální Odoo 18 image z Docker Hubu</span>
+    depends_on:
+      - db <span class="c"># Odoo počká, až se nejdřív spustí databáze</span>
+    ports:
+      <span class="c"># 127.0.0.1 je loopback adresa — existuje jen uvnitř tvého počítače
+      # a nikdy neopustí síťovou kartu. Nikdo na stejné Wi-Fi se nepřipojí.</span>
+      - "127.0.0.1:8069:8069"
+    volumes:
+      <span class="c"># Propojení složek na tvém počítači se složkami uvnitř kontejneru.</span>
+      - ./config:/etc/odoo <span class="c"># Tvůj odoo.conf → dovnitř kontejneru</span>
+      - ./addons:/mnt/extra-addons/custom <span class="c"># Tvoje vlastní (custom) moduly</span>
+      # - ./src:/mnt/extra-addons/enterprise <span class="c"># Až budeš instalovat Enterprise moduly, odkomentuj tento řádek</span>
+    environment:
+      - HOST=db <span class="c"># Říká Odoo: databázi najdeš pod názvem "db" (název služby výše)</span>
+      - USER=odoo <span class="c"># Uživatel pro připojení k DB (musí sedět s POSTGRES_USER)</span>
+      - PASSWORD=odoo <span class="c"># Heslo (musí sedět s POSTGRES_PASSWORD)</span>
+
+<span class="c"># Pojmenovaný svazek — Docker ho spravuje sám, data přežijí restart</span>
+volumes:
+  odoo-db-data:</div>
+            <p>Ulož soubor zkratkou <strong>Cmd+S</strong>.</p>
+            <div class="box box-warn"><strong>Pozor na odsazení:</strong> YAML soubory používají mezery (ne tabulátor
+              Tab) pro strukturu — každá úroveň jsou dvě mezery. Díky zapnutému Format on Save se odsazení při uložení
+              automaticky opraví. Pokud Cursor červeně podtrhuje text, je někde chyba v syntaxi.</div>
+            <div class="box box-ok"><strong>Hotovo, když:</strong> Soubor je uložen, Cursor ho červeně nepodtrhuje.
+            </div>
+          </div>
+        </div>
+
+        <div class="step" id="mac-s6">
+          <div class="step-header" onclick="toggle('mac-s6')">
+            <div class="step-num amber">6</div>
+            <div class="step-info">
+              <div class="step-name">config/odoo.conf — nastavení Odoo aplikace</div>
+              <div class="step-hint">Musí být ve složce config/, ne v hlavní složce</div>
+            </div>
+            <div class="step-right">
+              <div class="step-cb" onclick="check(event,'mac-s6')"></div>
+              <div class="step-arrow">▶</div>
+            </div>
+          </div>
+          <div class="step-body">
+            <p><strong>Co je tento soubor?</strong> Říká Odoo kde hledat moduly a jaké je hlavní administrátorské heslo
+              pro správu databází. Musí ležet ve složce <strong>config/</strong> — jinak ho Odoo nenajde.</p>
+            <div class="cmd"><span class="c"># Vytvoří soubor ve správné podsložce</span>
+touch config/odoo.conf</div>
+            <p>V levém panelu klikni na složku <strong>config</strong> → soubor <strong>odoo.conf</strong> a vlož:</p>
+            <div class="cmd"><span class="c"># Tato hlavička MUSÍ být na prvním řádku — bez ní Odoo celý soubor ignoruje</span>
+[options]
+
+<span class="c"># Cesty kde Odoo hledá moduly — oddělené čárkou, bez mezer
+# custom = tvoje složka addons/ (moduly na míru)
+# enterprise = složka src/ (Enterprise kód z GitHubu Odoo)
+# /usr/... = vestavěné moduly přímo v Docker image Odoo</span>
+addons_path = /mnt/extra-addons/custom,/mnt/extra-addons/enterprise,/usr/lib/python3/dist-packages/odoo/addons
+
+<span class="c"># Složka pro dočasná data Odoo (session soubory, nahrané přílohy)</span>
+data_dir = /var/lib/odoo
+
+<span class="c"># Master Password — heslo pro správu databází (vytváření, mazání, zálohy)
+# TOTO NENÍ heslo pro přihlášení do Odoo — to si nastavíš v prohlížeči
+# Zvol si vlastní silné heslo a zapamatuj si ho</span>
+admin_passwd = zvol_si_vlastni_heslo</div>
+            <p>Ulož <strong>Cmd+S</strong>.</p>
+            <div class="box box-warn"><strong>Kriticky důležité:</strong> První řádek musí být vždy
+              <code>[options]</code> včetně hranatých závorek. Bez tohoto "nadpisu sekce" Odoo celý soubor ignoruje a
+              budeš vidět chybu v logu.
+            </div>
+            <div class="box box-ok"><strong>Hotovo, když:</strong> Soubor config/odoo.conf existuje, začíná [options] a
+              obsahuje tvé vlastní admin_passwd.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-label">Fáze 4 — Přehled hesel</div>
+
+        <div class="step" id="mac-s7">
+          <div class="step-header" onclick="toggle('mac-s7')">
+            <div class="step-num red">7</div>
+            <div class="step-info">
+              <div class="step-name">Tři různá hesla — která jsou kde a k čemu</div>
+              <div class="step-hint">Nepomíchej je — každé odemyká něco jiného</div>
+            </div>
+            <div class="step-right">
+              <div class="step-cb" onclick="check(event,'mac-s7')"></div>
+              <div class="step-arrow">▶</div>
+            </div>
+          </div>
+          <div class="step-body">
+            <p>V systému jsou tři hesla na třech různých úrovních. Je zásadní vědět, co každé dělá — záměna způsobí
+              chyby, které jsou těžko dohledatelné.</p>
+            <div class="pw-grid">
+              <div class="pw-card">
+                <span class="pw-badge"
+                  style="background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border)">Interní</span>
+                <div class="pw-name">DB heslo</div>
+                <div class="pw-where">docker-compose.yml</div>
+                <div class="pw-desc"><strong>Technické spojení backendu s frontendem.</strong> Slouží výhradně pro
+                  komunikaci mezi Odoo a PostgreSQL uvnitř Dockeru. Jako uživatel ho nikdy nezadáváš — funguje
+                  automaticky na pozadí. Pro lokální vývoj je "odoo/odoo" bezpečné.</div>
+              </div>
+              <div class="pw-card">
+                <span class="pw-badge"
+                  style="background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)">Master</span>
+                <div class="pw-name">admin_passwd</div>
+                <div class="pw-where">config/odoo.conf</div>
+                <div class="pw-desc"><strong>Klíč od trezoru serveru.</strong> Používáš ho jen na stránce Database
+                  Manager — pro vytvoření, smazání nebo zálohu celé databáze. Zadáváš ho jednorázově při prvním
+                  spuštění. Zvol silné heslo.</div>
+              </div>
+              <div class="pw-card">
+                <span class="pw-badge"
+                  style="background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)">Uživatel</span>
+                <div class="pw-name">Tvůj login</div>
+                <div class="pw-where">webový formulář</div>
+                <div class="pw-desc"><strong>Každodenní přihlášení do Odoo.</strong> Nastavíš si ho při inicializaci
+                  databáze v prohlížeči. Tímto heslem se přihlašuješ do Odoo každý den.</div>
+              </div>
+            </div>
+            <div class="box box-tip" style="margin-top:12px"><strong>Jednou větou:</strong> DB heslo = propojení
+              programů (automatické, nevidíš ho). Master heslo = správa serverů (jednorázové). Uživatelské heslo = tvůj
+              každodenní přístup.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-label">Fáze 5 — Spuštění</div>
+
+        <div class="step" id="mac-s8">
+          <div class="step-header" onclick="toggle('mac-s8')">
+            <div class="step-num green">8</div>
+            <div class="step-info">
+              <div class="step-name">Spuštění kontejnerů</div>
+              <div class="step-hint">Docker stáhne Odoo a databázi a spustí je</div>
+            </div>
+            <div class="step-right">
+              <div class="step-cb" onclick="check(event,'mac-s8')"></div>
+              <div class="step-arrow">▶</div>
+            </div>
+          </div>
+          <div class="step-body">
+            <p><strong>Před spuštěním ověř, že Docker běží:</strong> Otevři terminál v Cursoru (Ctrl+`) a zadej:</p>
+            <div class="cmd"><span class="c"># Ověření že Docker je spuštěný a terminál ho vidí</span>
+docker --version</div>
+            <div class="output">Docker version 27.3.1, build ce12230</div>
+            <p>Pokud terminál napíše "command not found", Docker Desktop není spuštěný — otevři ho z Launchpadu a počkej
+              na ikonku velryby v systémové liště macOS.</p>
+            <p><strong>Ujisti se, že jsi ve správné složce</strong> — v terminálu to vidíš v textu před kurzorem (např.
+              <code>odoo18-project %</code>). Pokud ne:
+            </p>
+            <div class="cmd">cd ~/Desktop/odoo18-project</div>
+            <p><strong>Spuštění:</strong></p>
+            <div class="cmd"><span class="c"># -d = detached, kontejnery běží na pozadí a terminál zůstane volný</span>
+docker compose up -d</div>
+            <p>Docker stáhne obrazy PostgreSQL 15 a Odoo 18.0 (řádky s textem "Pulling"). První stažení trvá 5–15 minut.
+            </p>
+            <p><strong>Správný výstup po spuštění:</strong></p>
+            <div class="output">✔ Container odoo18-project-db-1 Started
+✔ Container odoo18-project-web-1 Started</div>
+            <p><strong>Ověření stavu:</strong></p>
+            <div class="cmd"><span class="c"># Zobrazí stav všech kontejnerů — u obou musí být "running"</span>
+docker compose ps</div>
+            <p><strong>Zobrazení logů</strong> (co Odoo dělá uvnitř, kde jsou chyby):</p>
+            <div class="cmd"><span class="c"># -f = sleduj průběžně. Ukončíš Ctrl+C — Odoo tím nevypneš</span>
+docker compose logs -f web</div>
+            <div class="box box-warn"><strong>Nejčastější chyba — "command not found":</strong> Docker Desktop není
+              spuštěný. Otevři ho z Launchpadu.</div>
+            <div class="box box-warn"><strong>Pozor na pomlčku:</strong> Správně je <code>docker compose</code>
+              (mezera). Starý příkaz <code>docker-compose</code> s pomlčkou v nových verzích nefunguje.</div>
+            <div class="box box-ok"><strong>Hotovo, když:</strong> Příkaz "docker compose ps" zobrazuje u obou služeb
+              status "running".</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-label">Fáze 6 — Odoo v prohlížeči</div>
+
+        <div class="step" id="mac-s9">
+          <div class="step-header" onclick="toggle('mac-s9')">
+            <div class="step-num green">9</div>
+            <div class="step-info">
+              <div class="step-name">Inicializace databáze v prohlížeči</div>
+              <div class="step-hint">Jednorázové nastavení — vytvoříš zde svůj systém</div>
+            </div>
+            <div class="step-right">
+              <div class="step-cb" onclick="check(event,'mac-s9')"></div>
+              <div class="step-arrow">▶</div>
+            </div>
+          </div>
+          <div class="step-body">
+            <p><strong>Otevři Chrome</strong> (doporučujeme Chrome — nejlepší kompatibilita s Odoo) a zadej do adresního
+              řádku:</p>
+            <div class="cmd">http://localhost:8069</div>
+            <p>Pokud se stránka nenačte hned, počkej 30 sekund a obnov (Cmd+R). Odoo potřebuje chvíli na první start.
+            </p>
+            <p><strong>Vyplň formulář "Create Database":</strong></p>
+            <ol>
+              <li><strong>Master Password</strong> — heslo z config/odoo.conf (to co jsi napsal za admin_passwd)</li>
+              <li><strong>Database Name</strong> — např. <code>odoo18_project_test</code>. Jen písmena, číslice a
+                podtržítko — bez mezer a háčků.</li>
+              <li><strong>Email</strong> — tvůj přihlašovací e-mail do Odoo (nemusí existovat, slouží jako login)</li>
+              <li><strong>Password</strong> — heslo pro každodenní přihlašování do Odoo</li>
+              <li><strong>Demo Data</strong> — viz varování níže</li>
+            </ol>
+            <div class="box box-danger"><strong>Demo Data — nevratná akce, dobře si to rozmysli</strong>
+              Zaškrtnutím přidáš do databáze vzorová data — fiktivní zákazníky, faktury, produkty. Tato data nelze
+              hromadně smazat bez smazání celé databáze.
+
+              <strong>Zaškrtni pokud:</strong> Chceš si Odoo proklikat a vyzkoušet jak vypadá vyplněný systém. Ideální
+              pro první seznámení.
+              <strong>Nezaškrtni pokud:</strong> Budeš databázi používat pro reálný provoz nebo do ní importovat data
+              klienta — demo záznamy by se mísily s reálnými.
+            </div>
+            <p>Klikni na <strong>Create Database</strong> a počkej 1–3 minuty.</p>
+            <div class="box box-tip"><strong>Vidíš "Community" místo "Enterprise"?</strong> Pokračuj na následující krok
+              "Enterprise + custom moduly" — tam aktivuješ Enterprise UI na své databázi.</div>
+            <div class="box box-warn"><strong>Stránka se nenačítá:</strong> Zkontroluj v terminálu příkazem
+              <code>docker compose ps</code> jestli kontejnery běží. Pokud je status "exited", spusť
+              <code>docker compose logs web</code> a pošli chybovou hlášku.
+            </div>
+            <div class="box box-ok"><strong>Hotovo, když:</strong> Vidíš přihlašovací obrazovku nebo dashboard Odoo.
+              Lokální prostředí běží!</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-label">Fáze 7 — Enterprise + custom moduly</div>
+
+        <div class="step" id="mac-s10">
+          <div class="step-header" onclick="toggle('mac-s10')">
+            <div class="step-num green">10</div>
+            <div class="step-info">
+              <div class="step-name">Aktivace Enterprise modulů (macOS)</div>
+              <div class="step-hint">Oddělené mounty + instalace web_enterprise do konkrétní databáze</div>
+            </div>
+            <div class="step-right">
+              <div class="step-cb" onclick="check(event,'mac-s10')"></div>
+              <div class="step-arrow">▶</div>
+            </div>
+          </div>
+          <div class="step-body">
+            <p><strong>Jednoduché pravidlo:</strong> do <code>src/</code> patří pouze složky s Enterprise moduly, do <code>addons/</code> patří pouze složky s tvými custom moduly.</p>
+            <p><strong>1) Zkontroluj obsah složek.</strong></p>
+            <p><strong>2) Pokud je <code>src/</code> prázdné, nahraj do něj Enterprise moduly</strong> (např. klonem z oficiálního repozitáře Odoo). <strong>Pokud je <code>addons/</code> prázdné, nahraj do něj tvoje custom moduly.</strong></p>
+            <p><strong>3) Odkomentuj řádek <code>./src:/mnt/extra-addons/enterprise</code> v <code>docker-compose.yml</code> a restartuj kontejnery:</strong></p>
+            <div class="cmd">docker compose down
+docker compose up -d</div>
+            <p><strong>4) Aktivuj Enterprise UI pro svou databázi:</strong></p>
+            <div class="cmd"><span class="c"># Dosaď vlastní hodnoty: název DB za odoo18_project_test, případně i --db_user a --db_password podle svého nastavení</span>
+docker compose exec web odoo -d odoo18_project_test -i web_enterprise --stop-after-init --db_host=db --db_user=odoo --db_password=odoo</div>
+            <p><strong>5) Ověř instalaci:</strong></p>
+            <div class="cmd">docker compose exec db psql -U odoo -d odoo18_project_test -c "SELECT name, state FROM ir_module_module WHERE name='web_enterprise';"</div>
+            <div class="output">web_enterprise | installed</div>
+            <div class="box box-ok"><strong>Hotovo, když:</strong> SQL vrátí <code>installed</code> a po obnovení stránky vidíš Enterprise rozhraní.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-label">Cheat sheet</div>
+
+        <div class="step" id="mac-term">
+          <div class="step-header" onclick="toggle('mac-term')">
+            <div class="step-num"
+              style="font-size:0.65rem;background:var(--bg3);border-color:var(--border2);color:var(--text3)">T</div>
+            <div class="step-info">
+              <div class="step-name">Orientace v terminálu — základní příkazy</div>
+              <div class="step-hint">Jak se pohybovat v adresářích, co příkazy dělají a jak zapnout skryté soubory</div>
+            </div>
+            <div class="step-right">
+              <div class="step-cb" onclick="check(event,'mac-term')"></div>
+              <div class="step-arrow">▶</div>
+            </div>
+          </div>
+          <div class="step-body">
+            <p>Terminál vždy pracuje v nějakém adresáři (složce). Aktuální adresář vidíš v textu před kurzorem, obvykle
+              za vlnovkou ~. Cesta se skládá ze složek oddělených lomítkem, např.
+              <code>/Users/jan/Desktop/odoo18-project</code>.
+            </p>
+            <table class="term-table">
+              <tr>
+                <th>Příkaz</th>
+                <th>Co dělá</th>
+              </tr>
+              <tr>
+                <td><code>pwd</code></td>
+                <td><strong>Print Working Directory</strong> — zobrazí celou cestu k aktuálnímu adresáři. Používej
+                  kdykoli si nejsi jistý, kde se nacházíš.</td>
+              </tr>
+              <tr>
+                <td><code>ls</code></td>
+                <td>Vypíše obsah aktuálního adresáře — soubory a složky. Skryté soubory (začínají tečkou) nezobrazí.
+                </td>
+              </tr>
+              <tr>
+                <td><code>ls -la</code></td>
+                <td>Vypíše obsah včetně <strong>skrytých souborů</strong> (začínají tečkou, např. <code>.env</code>) a
+                  detailů jako velikost a datum. Soubory začínající tečkou jsou záměrně skryté — systémové konfigurace,
+                  které by měly být méně viditelné. Bez parametru <code>-a</code> je Finder ani terminál nezobrazí.</td>
+              </tr>
+              <tr>
+                <td><code>cd název</code></td>
+                <td>Vstoupí do podsložky. Např. <code>cd config</code> přejde do složky config uvnitř aktuálního
+                  adresáře.</td>
+              </tr>
+              <tr>
+                <td><code>cd ..</code></td>
+                <td>Přejde o úroveň výš (do nadřazené složky). Dvě tečky = rodič.</td>
+              </tr>
+              <tr>
+                <td><code>cd ~</code></td>
+                <td>Přejde do domovské složky (/Users/tvoje_jméno) — vždy funguje odkudkoliv.</td>
+              </tr>
+              <tr>
+                <td><code>cd ~/Desktop</code></td>
+                <td>Přejde přímo na Plochu. Tilda (~) je zkratka pro domovskou složku.</td>
+              </tr>
+              <tr>
+                <td><code>mkdir název</code></td>
+                <td><strong>Make Directory</strong> — vytvoří novou složku v aktuálním adresáři.</td>
+              </tr>
+              <tr>
+                <td><code>touch soubor</code></td>
+                <td>Vytvoří prázdný soubor. Obsah pak přidáš v editoru (Cursoru).</td>
+              </tr>
+              <tr>
+                <td><code>clear</code></td>
+                <td>Vyčistí terminál — starý výstup zmizí, nic se nesmaže ani nevypne.</td>
+              </tr>
+              <tr>
+                <td><code>Ctrl+C</code></td>
+                <td>Přeruší běžící příkaz (např. sledování logů). Nic nesmaže ani nevypne.</td>
+              </tr>
+            </table>
+            <p style="margin-top:14px"><strong>Jak zapnout skryté soubory ve Finderu:</strong> Stiskni
+              <strong>Cmd+Shift+.</strong> (tečka) v libovolném okně Finderu. Skryté soubory se zobrazí šedě. Stejnou
+              zkratkou je opět skryješ. Skryté soubory v projektu (jako <code>.env</code> s hesly) jsou záměrně skryté,
+              abys je náhodně nenahrál na GitHub.
+            </p>
+            <hr class="sep">
+            <p><strong>Každodenní příkazy pro Odoo:</strong></p>
+            <div class="cmd"><span class="c"># Spuštění Odoo (po restartu počítače nebo po "down")</span>
+docker compose up -d
+
+<span class="c"># Zastavení Odoo — BEZPEČNÉ, data zůstanou zachována</span>
+docker compose down
+
+<span class="c"># Zobrazení stavu kontejnerů</span>
+docker compose ps
+
+<span class="c"># Sledování logů Odoo v reálném čase (ukončit: Ctrl+C)</span>
+docker compose logs -f web
+
+<span class="c"># Restart po změně konfiguračních souborů</span>
+docker compose down && docker compose up -d</div>
+            <div class="box box-danger"><strong>Toto smaže všechna data — používej jen záměrně:</strong>
+              <code>docker compose down -v</code> — parametr -v smaže i datové svazky včetně celé databáze. Bez
+              parametru -v jsou data v bezpečí.
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end mac -->
+
+    <!-- ════════════════════════════════ Windows ════════════════════════════════ -->
+    <div class="os-content" id="os-win">
+
+      <div class="phase">
+        <div class="phase-label">Nejdříve — co vlastně instalujeme</div>
+
+        <div class="step" id="win-s0">
+          <div class="step-header" onclick="toggle('win-s0')">
+            <div class="step-num purple">?</div>
+            <div class="step-info">
+              <div class="step-name">Odoo vs. databáze — klíčový rozdíl</div>
+              <div class="step-hint">Přečti si před začátkem, ušetří ti to zmatek</div>
+            </div>
+            <div class="step-right">
+              <div class="step-cb" onclick="check(event,'win-s0')"></div>
+              <div class="step-arrow">▶</div>
+            </div>
+          </div>
+          <div class="step-body">
+            <p>Spousta lidí si myslí, že Odoo a databáze je totéž. Není. Jsou to dva samostatné programy, které
+              spolupracují.</p>
+            <div class="two-col">
+              <div class="info-card">
+                <div class="info-card-title">Odoo = webová aplikace (frontend)</div>
+                <div class="info-card-body">To, co vidíš v prohlížeči — tlačítka, formuláře, reporty, grafy. Odoo
+                  přijímá tvoje akce, zpracovává logiku a zobrazuje výsledky. Samo o sobě ale nic neukládá.</div>
+              </div>
+              <div class="info-card">
+                <div class="info-card-title">PostgreSQL = zálohovací systém (backend)</div>
+                <div class="info-card-body">Program, který ukládá všechna data na disk — zákazníky, faktury, produkty,
+                  pohyby skladu. Je to trezor na data bez vlastního rozhraní. Odoo do něj zapisuje a čte z něj.</div>
+              </div>
+            </div>
+            <p>Docker spustí oba programy najednou a propojí je.</p>
+            <div class="box box-ok"><strong>Shrnutí</strong>Odoo = co vidíš. PostgreSQL = kde to žije. Docker = kdo to
+              spouští.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-label">Fáze 0 — Příprava Windows</div>
+
+        <div class="step" id="win-s-1">
+          <div class="step-header" onclick="toggle('win-s-1')">
+            <div class="step-num red">0</div>
+            <div class="step-info">
+              <div class="step-name">WSL2 — podsystém pro Linux (nutný základ)</div>
+              <div class="step-hint">Windows potřebuje tuto vrstvu, aby Docker fungoval</div>
+            </div>
+            <div class="step-right">
+              <div class="step-cb" onclick="check(event,'win-s-1')"></div>
+              <div class="step-arrow">▶</div>
+            </div>
+          </div>
+          <div class="step-body">
+            <p><strong>Co je WSL2?</strong> Docker na Windows potřebuje ke svému běhu linuxové prostředí. WSL2 (Windows
+              Subsystem for Linux) je tenká linuxová vrstva zabudovaná přímo do Windows. Bez ní Docker nefunguje.</p>
+            <p><strong>Instalace WSL2:</strong> Klikni pravým tlačítkem na tlačítko Start a vyber <strong>"Windows
+                PowerShell (admin)"</strong> nebo <strong>"Terminál (admin)"</strong>. Zadej příkaz:</p>
+            <div class="cmd"><span class="c"># Nainstaluje WSL2 i výchozí Linux distribuci (Ubuntu)</span>
+wsl --install</div>
+            <p>Po dokončení restartuj počítač.</p>
+            <div class="box box-warn"><strong>Windows 10 vs 11:</strong> Na Windows 10 musíš mít verzi 2004 nebo novější
+              (Build 19041+). Zkontroluj přes Nastavení → Systém → O aplikaci Windows.</div>
+            <div class="box box-ok"><strong>Hotovo, když:</strong> Počítač se restartoval a příkaz
+              <code>wsl --status</code> v PowerShellu zobrazí "Default Version: 2".
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-label">Fáze 1 — Software</div>
+
+        <div class="step" id="win-s1">
+          <div class="step-header" onclick="toggle('win-s1')">
+            <div class="step-num blue">1</div>
+            <div class="step-info">
+              <div class="step-name">Docker Desktop — stažení a instalace</div>
+              <div class="step-hint">Program, který spouští Odoo a databázi izolovaně</div>
+            </div>
+            <div class="step-right">
+              <div class="step-cb" onclick="check(event,'win-s1')"></div>
+              <div class="step-arrow">▶</div>
+            </div>
+          </div>
+          <div class="step-body">
+            <p><strong>Stažení:</strong> Jdi na <strong>docker.com/products/docker-desktop</strong> a stáhni verzi pro
+              Windows. Spusť instalátor — při instalaci ponech zaškrtnutou možnost <strong>"Use WSL 2 instead of
+                Hyper-V"</strong>.</p>
+            <p><strong>Jak poznáš, že Docker běží:</strong> V oznamovací oblasti (pravý dolní roh hlavního panelu
+              Windows, u hodin) se objeví ikonka velryby. Klikni na ni pravým tlačítkem — pokud vidíš <strong>"Docker
+                Desktop is running"</strong>, vše je v pořádku. Pokud ikonku nevidíš, klikni na šipku ^ vedle hodin pro
+              zobrazení skrytých ikon.</p>
+            <div class="box box-ok"><strong>Hotovo, když:</strong> Ikonka velryby v oznamovací oblasti a kliknutím
+              zobrazí "Docker Desktop is running".</div>
+          </div>
+        </div>
+
+        <div class="step" id="win-s2">
+          <div class="step-header" onclick="toggle('win-s2')">
+            <div class="step-num blue">2</div>
+            <div class="step-info">
+              <div class="step-name">Cursor — stažení, instalace a přihlášení</div>
+              <div class="step-hint">Editor kódu s AI — pracujeme tu celou dobu</div>
+            </div>
+            <div class="step-right">
+              <div class="step-cb" onclick="check(event,'win-s2')"></div>
+              <div class="step-arrow">▶</div>
+            </div>
+          </div>
+          <div class="step-body">
+            <p><strong>Stažení a instalace:</strong> Jdi na <strong>cursor.com</strong>, klikni Download a stáhni verzi
+              pro Windows (.exe instalátor). Spusť instalátor a postupuj podle pokynů.</p>
+            <p><strong>Přihlášení:</strong> Po spuštění Cursor zobrazí přihlašovací obrazovku — přihlas se přes GitHub
+              (tlačítko "Continue with GitHub").</p>
+            <p><strong>Nastavení rozložení panelů:</strong> Průzkumník souborů může být na pravé straně. Klikni na něj
+              pravým tlačítkem a vyber <strong>"Move Primary Side Bar to Left"</strong>. AI chat otevřeš zkratkou
+              <strong>Ctrl+L</strong>.
+            </p>
+            <div class="box box-ok"><strong>Hotovo, když:</strong> Cursor je otevřený, jsi přihlášen přes GitHub a
+              průzkumník souborů je v levém panelu.</div>
+          </div>
+        </div>
+
+        <div class="step" id="win-s3">
+          <div class="step-header" onclick="toggle('win-s3')">
+            <div class="step-num blue">3</div>
+            <div class="step-info">
+              <div class="step-name">Rozšíření a automatické formátování</div>
+              <div class="step-hint">Docker extension, Python, Format on Save</div>
+            </div>
+            <div class="step-right">
+              <div class="step-cb" onclick="check(event,'win-s3')"></div>
+              <div class="step-arrow">▶</div>
+            </div>
+          </div>
+          <div class="step-body">
+            <p><strong>Instalace rozšíření:</strong> Stiskni <strong>Ctrl+Shift+X</strong> — otevře se panel Extensions.
+              Nainstaluj <strong>Docker</strong> (autor Microsoft) a <strong>Python</strong> (autor Microsoft).</p>
+            <p><strong>Zapnutí automatického formátování:</strong> Otevři nastavení zkratkou <strong>Ctrl+,</strong>
+              (čárka). Do vyhledávacího pole napiš <code>format on save</code> a zaškrtni <strong>Editor: Format On
+                Save</strong>.</p>
+            <div class="box box-ok"><strong>Hotovo, když:</strong> V levém panelu Cursoru vidíš ikonku velryby a Format
+              on Save je zaškrtnuté.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-label">Fáze 2 — Struktura projektu</div>
+
+        <div class="step" id="win-s4">
+          <div class="step-header" onclick="toggle('win-s4')">
+            <div class="step-num amber">4</div>
+            <div class="step-info">
+              <div class="step-name">Terminál — vytvoření složek projektu</div>
+              <div class="step-hint">Na Windows používáme PowerShell</div>
+            </div>
+            <div class="step-right">
+              <div class="step-cb" onclick="check(event,'win-s4')"></div>
+              <div class="step-arrow">▶</div>
+            </div>
+          </div>
+          <div class="step-body">
+            <p><strong>Co je terminál?</strong> Okno, kam píšeš textové příkazy a počítač je vykoná — místo klikání myší
+              říkáš počítači přímo co má dělat. <strong>Otevření v Cursoru:</strong> klikni v horním menu na
+              <strong>Terminal → New Terminal</strong> nebo stiskni <strong>Ctrl+`</strong> (Ctrl a zpětný apostrof —
+              klávesa vlevo od jedničky). Dole se otevře tmavý panel — to je terminál.
+            </p>
+            <p><strong>Vytvoření složek:</strong> Piš příkazy přesně jak jsou napsané a po každém stiskni Enter.</p>
+            <div class="cmd"><span class="c"># Přejdi na Plochu (Desktop)
+  # Na Windows použij $HOME místo ~ (obojí vede do domovské složky)</span>
+cd $HOME\Desktop
+
+<span class="c"># Vytvoř hlavní složku projektu</span>
+mkdir odoo18-project
+
+<span class="c"># Vstup do nové složky</span>
+cd odoo18-project
+
+<span class="c"># Vytvoř tři podsložky najednou:
+  # addons = vlastní moduly (vývoj na míru)
+  # config = konfigurační soubory Odoo
+  # src = Enterprise kód stažený z GitHubu
+  # Na Windows odděluj názvy čárkou</span>
+mkdir addons, config, src</div>
+            <p><strong>Vytvoření konfiguračních souborů:</strong> Na Windows se místo příkazu <code>touch</code> (macOS)
+              používá <code>New-Item</code> — výsledek je stejný, prázdný soubor.</p>
+            <div class="cmd"><span class="c"># New-Item je Windows ekvivalent příkazu touch</span>
+New-Item docker-compose.yml
+New-Item config\odoo.conf</div>
+            <p><strong>Otevření projektu v Cursoru:</strong></p>
+            <div class="cmd"><span class="c"># Tečka = "tato složka" — Cursor otevře aktuální adresář</span>
+cursor .</div>
+            <div class="box box-ok"><strong>Hotovo, když:</strong> V levém panelu Cursoru vidíš složky addons, config a
+              src.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-label">Fáze 3 — Konfigurační soubory</div>
+
+        <div class="step" id="win-s5">
+          <div class="step-header" onclick="toggle('win-s5')">
+            <div class="step-num amber">5</div>
+            <div class="step-info">
+              <div class="step-name">docker-compose.yml — recept pro Docker</div>
+              <div class="step-hint">Říká Dockeru co spustit, jak propojit a jak zabezpečit</div>
+            </div>
+            <div class="step-right">
+              <div class="step-cb" onclick="check(event,'win-s5')"></div>
+              <div class="step-arrow">▶</div>
+            </div>
+          </div>
+          <div class="step-body">
+            <p><strong>Co je tento soubor?</strong> Textový "recept", který Dockeru říká: spusť backend (PostgreSQL) a
+              frontend (Odoo 18), propoj je dohromady, zpřístupni Odoo na portu 8069, a data ukládej trvale na disk. Bez
+              tohoto souboru Docker neví co má dělat.</p>
+            <p><strong>Soubor jsi vytvořil v kroku 4</strong> příkazem <code>New-Item docker-compose.yml</code>. Teď ho
+              naplníme obsahem.</p>
+            <p>V levém panelu Cursoru klikni na <strong>docker-compose.yml</strong> a vlož celý tento obsah (označ vše
+              <strong>Ctrl+A</strong>, smaž a vlož):
+            </p>
+            <div class="cmd"><span class="c"># Zde definujeme všechny "stroje" (services), které Docker spustí</span>
+services:
+
+  <span class="c"># ── BACKEND: DATABÁZE ──────────────────────────────────────────
+  # PostgreSQL ukládá všechna data Odoo na disk.
+  # Je to zálohovací systém bez vlastního UI — čistý trezor na data.</span>
+  db:
+    image: postgres:15 <span class="c"># Přesná verze PostgreSQL, kterou Odoo 18 potřebuje</span>
+    environment:
+      - POSTGRES_DB=postgres <span class="c"># Název výchozí databáze</span>
+      - POSTGRES_USER=odoo <span class="c"># Uživatel, přes kterého se Odoo připojuje k DB</span>
+      - POSTGRES_PASSWORD=odoo <span class="c"># Heslo tohoto uživatele (interní, ty ho nikdy nezadáváš)</span>
+    volumes:
+      <span class="c"># Data se ukládají do pojmenovaného svazku.
+      # Díky tomu nepřijdeš o data ani když Docker vypneš.</span>
+      - odoo-db-data:/var/lib/postgresql/data
+
+  <span class="c"># ── FRONTEND: ODOO ─────────────────────────────────────────────
+  # Odoo je webová aplikace — to co vidíš v prohlížeči.
+  # Čte data z backendu (PostgreSQL) a zobrazuje je jako UI.</span>
+  web:
+    image: odoo:18.0 <span class="c"># Oficiální Odoo 18 image z Docker Hubu</span>
+    depends_on:
+      - db <span class="c"># Odoo počká, až se nejdřív spustí databáze</span>
+    ports:
+      <span class="c"># 127.0.0.1 je loopback adresa — existuje jen uvnitř tvého počítače
+      # a nikdy neopustí síťovou kartu. Nikdo na stejné Wi-Fi se nepřipojí.</span>
+      - "127.0.0.1:8069:8069"
+    volumes:
+      <span class="c"># Propojení složek na tvém počítači se složkami uvnitř kontejneru.</span>
+      - ./config:/etc/odoo <span class="c"># Tvůj odoo.conf → dovnitř kontejneru</span>
+      - ./addons:/mnt/extra-addons/custom <span class="c"># Tvoje vlastní (custom) moduly</span>
+      # - ./src:/mnt/extra-addons/enterprise <span class="c"># Až budeš instalovat Enterprise moduly, odkomentuj tento řádek</span>
+    environment:
+      - HOST=db <span class="c"># Říká Odoo: databázi najdeš pod názvem "db" (název služby výše)</span>
+      - USER=odoo <span class="c"># Uživatel pro připojení k DB (musí sedět s POSTGRES_USER)</span>
+      - PASSWORD=odoo <span class="c"># Heslo (musí sedět s POSTGRES_PASSWORD)</span>
+
+<span class="c"># Pojmenovaný svazek — Docker ho spravuje sám, data přežijí restart</span>
+volumes:
+  odoo-db-data:</div>
+            <p>Ulož soubor zkratkou <strong>Ctrl+S</strong>.</p>
+            <div class="box box-warn"><strong>Pozor na odsazení:</strong> YAML soubory používají mezery (ne tabulátor
+              Tab) pro strukturu — každá úroveň jsou dvě mezery. Díky zapnutému Format on Save se odsazení při uložení
+              automaticky opraví. Pokud Cursor červeně podtrhuje text, je někde chyba v syntaxi.</div>
+            <div class="box box-ok"><strong>Hotovo, když:</strong> Soubor je uložen, Cursor ho červeně nepodtrhuje.
+            </div>
+          </div>
+        </div>
+
+        <div class="step" id="win-s6">
+          <div class="step-header" onclick="toggle('win-s6')">
+            <div class="step-num amber">6</div>
+            <div class="step-info">
+              <div class="step-name">config/odoo.conf — nastavení Odoo aplikace</div>
+              <div class="step-hint">Musí být ve složce config/, ne v hlavní složce</div>
+            </div>
+            <div class="step-right">
+              <div class="step-cb" onclick="check(event,'win-s6')"></div>
+              <div class="step-arrow">▶</div>
+            </div>
+          </div>
+          <div class="step-body">
+            <p><strong>Co je tento soubor?</strong> Říká Odoo kde hledat moduly a jaké je hlavní administrátorské heslo
+              pro správu databází. Musí ležet ve složce <strong>config/</strong> — jinak ho Odoo nenajde.</p>
+            <p><strong>Soubor jsi vytvořil v kroku 4</strong> příkazem <code>New-Item config\odoo.conf</code>. Teď ho
+              naplníme obsahem.</p>
+            <p>V levém panelu klikni na složku <strong>config</strong> → soubor <strong>odoo.conf</strong> a vlož:</p>
+            <div class="cmd"><span class="c"># Tato hlavička MUSÍ být na prvním řádku — bez ní Odoo celý soubor
+  ignoruje</span>
+[options]
+
+<span class="c"># Cesty kde Odoo hledá moduly — oddělené čárkou, bez mezer
+# custom = tvoje složka addons/ (moduly na míru)
+# enterprise = složka src/ (Enterprise kód z GitHubu Odoo)
+# /usr/... = vestavěné moduly přímo v Docker image Odoo</span>
+addons_path = /mnt/extra-addons/custom,/mnt/extra-addons/enterprise,/usr/lib/python3/dist-packages/odoo/addons
+
+<span class="c"># Složka pro dočasná data Odoo (session soubory, nahrané přílohy)</span>
+data_dir = /var/lib/odoo
+
+<span class="c"># Master Password — heslo pro správu databází (vytváření, mazání, zálohy)
+# TOTO NENÍ heslo pro přihlášení do Odoo — to si nastavíš v prohlížeči
+# Zvol si vlastní silné heslo a zapamatuj si ho</span>
+admin_passwd = zvol_si_vlastni_heslo</div>
+            <p>Ulož <strong>Ctrl+S</strong>.</p>
+            <div class="box box-warn"><strong>Kriticky důležité:</strong> První řádek musí být vždy
+              <code>[options]</code> včetně hranatých závorek. Bez tohoto "nadpisu sekce" Odoo celý soubor ignoruje a
+              budeš vidět chybu v logu.
+            </div>
+            <div class="box box-ok"><strong>Hotovo, když:</strong> Soubor config/odoo.conf existuje, začíná [options] a
+              obsahuje tvé vlastní admin_passwd.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-label">Fáze 4 — Přehled hesel</div>
+
+        <div class="step" id="win-s7">
+          <div class="step-header" onclick="toggle('win-s7')">
+            <div class="step-num red">7</div>
+            <div class="step-info">
+              <div class="step-name">Tři různá hesla — která jsou kde a k čemu</div>
+              <div class="step-hint">Nepomíchej je — každé odemyká něco jiného</div>
+            </div>
+            <div class="step-right">
+              <div class="step-cb" onclick="check(event,'win-s7')"></div>
+              <div class="step-arrow">▶</div>
+            </div>
+          </div>
+          <div class="step-body">
+            <p>V systému jsou tři hesla na třech různých úrovních. Je zásadní vědět, co každé dělá — záměna způsobí
+              chyby, které jsou těžko dohledatelné.</p>
+            <div class="pw-grid">
+              <div class="pw-card">
+                <span class="pw-badge"
+                  style="background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border)">Interní</span>
+                <div class="pw-name">DB heslo</div>
+                <div class="pw-where">docker-compose.yml</div>
+                <div class="pw-desc"><strong>Technické spojení backendu s frontendem.</strong> Slouží výhradně pro
+                  komunikaci mezi Odoo a PostgreSQL uvnitř Dockeru. Jako uživatel ho nikdy nezadáváš — funguje
+                  automaticky na pozadí. Pro lokální vývoj je "odoo/odoo" bezpečné.</div>
+              </div>
+              <div class="pw-card">
+                <span class="pw-badge"
+                  style="background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)">Master</span>
+                <div class="pw-name">admin_passwd</div>
+                <div class="pw-where">config/odoo.conf</div>
+                <div class="pw-desc"><strong>Klíč od trezoru serveru.</strong> Používáš ho jen na stránce Database
+                  Manager — pro vytvoření, smazání nebo zálohu celé databáze. Zadáváš ho jednorázově při prvním
+                  spuštění. Zvol silné heslo.</div>
+              </div>
+              <div class="pw-card">
+                <span class="pw-badge"
+                  style="background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)">Uživatel</span>
+                <div class="pw-name">Tvůj login</div>
+                <div class="pw-where">webový formulář</div>
+                <div class="pw-desc"><strong>Každodenní přihlášení do Odoo.</strong> Nastavíš si ho při inicializaci
+                  databáze v prohlížeči. Tímto heslem se přihlašuješ do Odoo každý den.</div>
+              </div>
+            </div>
+            <div class="box box-tip" style="margin-top:12px"><strong>Jednou větou:</strong> DB heslo = propojení
+              programů (automatické, nevidíš ho). Master heslo = správa serverů (jednorázové). Uživatelské heslo = tvůj
+              každodenní přístup.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-label">Fáze 5 — Spuštění</div>
+
+        <div class="step" id="win-s8">
+          <div class="step-header" onclick="toggle('win-s8')">
+            <div class="step-num green">8</div>
+            <div class="step-info">
+              <div class="step-name">Spuštění kontejnerů</div>
+              <div class="step-hint">Docker stáhne Odoo a databázi a spustí je</div>
+            </div>
+            <div class="step-right">
+              <div class="step-cb" onclick="check(event,'win-s8')"></div>
+              <div class="step-arrow">▶</div>
+            </div>
+          </div>
+          <div class="step-body">
+            <p><strong>Před spuštěním ověř, že Docker běží:</strong> Otevři terminál v Cursoru (<strong>Ctrl+`</strong>)
+              a zadej:</p>
+            <div class="cmd"><span class="c"># Ověření že Docker je spuštěný a terminál ho vidí</span>
+docker --version</div>
+            <div class="output">Docker version 27.3.1, build ce12230</div>
+            <p>Pokud terminál napíše "Tento příkaz nebyl rozpoznán", Docker Desktop není spuštěný — otevři ho z nabídky
+              Start a počkej na ikonku velryby v oznamovací oblasti.</p>
+            <p><strong>Ujisti se, že jsi ve správné složce</strong> — v terminálu to vidíš v textu před kurzorem (např.
+              <code>PS C:\Users\Jan\Desktop\odoo18-project></code>). Pokud ne:
+            </p>
+            <div class="cmd">cd $HOME\Desktop\odoo18-project</div>
+            <p><strong>Spuštění:</strong></p>
+            <div class="cmd"><span class="c"># -d = detached, kontejnery běží na pozadí a terminál zůstane volný</span>
+docker compose up -d</div>
+            <p>Docker stáhne obrazy PostgreSQL 15 a Odoo 18.0 (řádky s textem "Pulling"). První stažení trvá 5–15 minut.
+            </p>
+            <p><strong>Správný výstup po spuštění:</strong></p>
+            <div class="output">✔ Container odoo18-project-db-1 Started
+✔ Container odoo18-project-web-1 Started</div>
+            <p><strong>Ověření stavu:</strong></p>
+            <div class="cmd"><span class="c"># Zobrazí stav všech kontejnerů — u obou musí být "running"</span>
+docker compose ps</div>
+            <p><strong>Zobrazení logů</strong> (co Odoo dělá uvnitř, kde jsou chyby):</p>
+            <div class="cmd"><span class="c"># -f = sleduj průběžně. Ukončíš Ctrl+C — Odoo tím nevypneš</span>
+docker compose logs -f web</div>
+            <div class="box box-warn"><strong>Nejčastější chyba — "příkaz nebyl rozpoznán":</strong> Docker Desktop není
+              spuštěný. Otevři ho z nabídky Start.</div>
+            <div class="box box-warn"><strong>Pozor na pomlčku:</strong> Správně je <code>docker compose</code>
+              (mezera). Starý příkaz <code>docker-compose</code> s pomlčkou v nových verzích nefunguje.</div>
+            <div class="box box-ok"><strong>Hotovo, když:</strong> Příkaz "docker compose ps" zobrazuje u obou služeb
+              status "running".</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-label">Fáze 6 — Odoo v prohlížeči</div>
+
+        <div class="step" id="win-s9">
+          <div class="step-header" onclick="toggle('win-s9')">
+            <div class="step-num green">9</div>
+            <div class="step-info">
+              <div class="step-name">Inicializace databáze v prohlížeči</div>
+              <div class="step-hint">Jednorázové nastavení — vytvoříš zde svůj systém</div>
+            </div>
+            <div class="step-right">
+              <div class="step-cb" onclick="check(event,'win-s9')"></div>
+              <div class="step-arrow">▶</div>
+            </div>
+          </div>
+          <div class="step-body">
+            <p><strong>Otevři Chrome</strong> (doporučujeme Chrome — nejlepší kompatibilita s Odoo) a zadej do adresního
+              řádku:</p>
+            <div class="cmd">http://localhost:8069</div>
+            <p>Pokud se stránka nenačte hned, počkej 30 sekund a obnov stránku (<strong>F5</strong>). Odoo potřebuje
+              chvíli na první start.</p>
+            <p><strong>Uvidíš stránku "Create Database" — vyplň ji takto:</strong></p>
+            <ol>
+              <li><strong>Master Password</strong> — heslo z config/odoo.conf (to co jsi napsal za admin_passwd)</li>
+              <li><strong>Database Name</strong> — název tvé databáze, např. <code>odoo18_project_test</code>. Jen
+                písmena, číslice a podtržítko — bez mezer a háčků.</li>
+              <li><strong>Email</strong> — tvůj přihlašovací e-mail do Odoo (nemusí existovat, slouží jako login)</li>
+              <li><strong>Password</strong> — heslo pro každodenní přihlašování do Odoo</li>
+              <li><strong>Demo Data</strong> — viz varování níže</li>
+            </ol>
+            <div class="box box-danger"><strong>Demo Data — nevratná akce, dobře si to rozmysli</strong>
+              Zaškrtnutím přidáš do databáze vzorová data — fiktivní zákazníky, faktury, produkty. Tato data nelze
+              hromadně smazat bez smazání celé databáze.
+
+              <strong>Zaškrtni pokud:</strong> Chceš si Odoo proklikat a vyzkoušet jak vypadá vyplněný systém. Ideální
+              pro první seznámení.
+              <strong>Nezaškrtni pokud:</strong> Budeš databázi používat pro reálný provoz nebo do ní importovat data
+              klienta — demo záznamy by se mísily s reálnými.
+            </div>
+            <p>Klikni na <strong>Create Database</strong> a počkej 1–3 minuty.</p>
+            <div class="box box-tip"><strong>Vidíš "Community" místo "Enterprise"?</strong> Pokračuj na následující krok
+              "Enterprise + custom moduly" — tam aktivuješ Enterprise UI na své databázi.</div>
+            <div class="box box-warn"><strong>Stránka se nenačítá:</strong> Zkontroluj v terminálu příkazem
+              <code>docker compose ps</code> jestli kontejnery běží. Pokud je status "exited", spusť
+              <code>docker compose logs web</code> a pošli chybovou hlášku.
+            </div>
+            <div class="box box-ok"><strong>Hotovo, když:</strong> Vidíš přihlašovací obrazovku nebo dashboard Odoo.
+              Lokální prostředí běží!</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-label">Fáze 7 — Enterprise + custom moduly</div>
+
+        <div class="step" id="win-s10">
+          <div class="step-header" onclick="toggle('win-s10')">
+            <div class="step-num green">10</div>
+            <div class="step-info">
+              <div class="step-name">Aktivace Enterprise modulů (Windows)</div>
+              <div class="step-hint">Oddělené mounty + instalace web_enterprise do konkrétní databáze</div>
+            </div>
+            <div class="step-right">
+              <div class="step-cb" onclick="check(event,'win-s10')"></div>
+              <div class="step-arrow">▶</div>
+            </div>
+          </div>
+          <div class="step-body">
+            <p><strong>Jednoduché pravidlo:</strong> do <code>src/</code> patří pouze složky s Enterprise moduly, do <code>addons/</code> patří pouze složky s tvými custom moduly.</p>
+            <p><strong>1) Zkontroluj obsah složek.</strong></p>
+            <p><strong>2) Pokud je <code>src/</code> prázdné, nahraj do něj Enterprise moduly</strong> (např. klonem z oficiálního repozitáře Odoo). <strong>Pokud je <code>addons/</code> prázdné, nahraj do něj tvé custom moduly.</strong></p>
+            <p><strong>3) Odkomentuj řádek <code>./src:/mnt/extra-addons/enterprise</code> v <code>docker-compose.yml</code> a restartuj kontejnery:</strong></p>
+            <div class="cmd">docker compose down
+docker compose up -d</div>
+            <p><strong>4) Aktivuj Enterprise UI pro svou databázi:</strong></p>
+            <div class="cmd"><span class="c"># Dosaď vlastní hodnoty: název DB za odoo18_project_test, případně i --db_user a --db_password podle svého nastavení</span>
+docker compose exec web odoo -d odoo18_project_test -i web_enterprise --stop-after-init --db_host=db --db_user=odoo --db_password=odoo</div>
+            <p><strong>5) Ověř instalaci:</strong></p>
+            <div class="cmd">docker compose exec db psql -U odoo -d odoo18_project_test -c "SELECT name, state FROM ir_module_module WHERE name='web_enterprise';"</div>
+            <div class="output">web_enterprise | installed</div>
+            <div class="box box-ok"><strong>Hotovo, když:</strong> SQL vrátí <code>installed</code> a po obnovení stránky na localhostu vidíš Enterprise rozhraní.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-label">Cheat sheet</div>
+
+        <div class="step" id="win-term">
+          <div class="step-header" onclick="toggle('win-term')">
+            <div class="step-num"
+              style="font-size:0.65rem;background:var(--bg3);border-color:var(--border2);color:var(--text3)">T</div>
+            <div class="step-info">
+              <div class="step-name">Orientace v terminálu — základní příkazy (PowerShell)</div>
+              <div class="step-hint">Jak se pohybovat v adresářích, co příkazy dělají a jak zapnout skryté soubory</div>
+            </div>
+            <div class="step-right">
+              <div class="step-cb" onclick="check(event,'win-term')"></div>
+              <div class="step-arrow">▶</div>
+            </div>
+          </div>
+          <div class="step-body">
+            <p>PowerShell vždy pracuje v nějakém adresáři. Aktuální adresář vidíš v textu před kurzorem, např.
+              <code>PS C:\Users\Jan\Desktop\odoo18-project></code>. Cesta se skládá ze složek oddělených zpětným
+              lomítkem <code>\</code>.
+            </p>
+            <table class="term-table">
+              <tr>
+                <th>Příkaz</th>
+                <th>Co dělá</th>
+              </tr>
+              <tr>
+                <td><code>pwd</code></td>
+                <td><strong>Print Working Directory</strong> — zobrazí celou cestu k aktuálnímu adresáři. Používej
+                  kdykoli si nejsi jistý, kde se nacházíš.</td>
+              </tr>
+              <tr>
+                <td><code>ls</code> nebo <code>dir</code></td>
+                <td>Vypíše obsah aktuálního adresáře — soubory a složky. Obě varianty fungují v PowerShellu stejně.
+                  Skryté soubory (začínají tečkou) zobrazí také.</td>
+              </tr>
+              <tr>
+                <td><code>ls -Force</code></td>
+                <td>Zobrazí <strong>všechny soubory včetně skrytých</strong> — soubory s atributem Hidden, které by
+                  jinak nebyly vidět. Ekvivalent macOS <code>ls -la</code>.</td>
+              </tr>
+              <tr>
+                <td><code>cd název</code></td>
+                <td>Vstoupí do podsložky. Např. <code>cd config</code> přejde do složky config uvnitř aktuálního
+                  adresáře.</td>
+              </tr>
+              <tr>
+                <td><code>cd ..</code></td>
+                <td>Přejde o úroveň výš (do nadřazené složky).</td>
+              </tr>
+              <tr>
+                <td><code>cd $HOME</code></td>
+                <td>Přejde do domovské složky (C:\Users\tvoje_jméno).</td>
+              </tr>
+              <tr>
+                <td><code>cd $HOME\Desktop</code></td>
+                <td>Přejde přímo na Plochu.</td>
+              </tr>
+              <tr>
+                <td><code>mkdir název</code></td>
+                <td><strong>Make Directory</strong> — vytvoří novou složku. Funguje stejně jako na macOS.</td>
+              </tr>
+              <tr>
+                <td><code>New-Item soubor</code></td>
+                <td>Vytvoří prázdný soubor (Windows ekvivalent macOS příkazu <code>touch</code>).</td>
+              </tr>
+              <tr>
+                <td><code>cls</code></td>
+                <td>Vyčistí terminál — starý výstup zmizí, nic se nesmaže.</td>
+              </tr>
+              <tr>
+                <td><code>Ctrl+C</code></td>
+                <td>Přeruší běžící příkaz. Nic nesmaže ani nevypne.</td>
+              </tr>
+            </table>
+            <p style="margin-top:14px"><strong>Jak zapnout skryté soubory ve Windows Průzkumníku:</strong> Otevři
+              libovolné okno Průzkumníku → záložka <strong>Zobrazení</strong> (nebo View) → zaškrtni <strong>Skryté
+                položky</strong>. Případně přes Nastavení → Průzkumník → Zobrazit skryté soubory. Soubory začínající
+              tečkou (jako <code>.env</code> s hesly) jsou záměrně skryté, abys je náhodně nenahrál na GitHub.</p>
+            <hr class="sep">
+            <p><strong>Každodenní příkazy pro Odoo (stejné jako na macOS):</strong></p>
+            <div class="cmd"><span class="c"># Spuštění Odoo</span>
+docker compose up -d
+
+<span class="c"># Zastavení Odoo — BEZPEČNÉ, data zůstanou zachována</span>
+docker compose down
+
+<span class="c"># Zobrazení stavu kontejnerů</span>
+docker compose ps
+
+<span class="c"># Sledování logů Odoo v reálném čase (ukončit: Ctrl+C)</span>
+docker compose logs -f web
+
+<span class="c"># Restart po změně konfiguračních souborů</span>
+docker compose down && docker compose up -d</div>
+            <div class="box box-danger"><strong>Toto smaže všechna data — používej jen záměrně:</strong>
+              <code>docker compose down -v</code> — parametr -v smaže i datové svazky včetně celé databáze. Bez
+              parametru -v jsou data v bezpečí.
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end win -->
+
+  </div><!-- end main -->
+
+  <script>
+    function switchOS(os, tab) {
+      document.querySelectorAll('.os-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.os-content').forEach(c => c.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('os-' + os).classList.add('active');
+    }
+
+    function toggle(id) {
+      const step = document.getElementById(id);
+      const body = step.querySelector('.step-body');
+      const arrow = step.querySelector('.step-arrow');
+      const open = body.classList.contains('open');
+      body.classList.toggle('open', !open);
+      arrow.classList.toggle('open', !open);
+    }
+
+    function check(e, id) {
+      e.stopPropagation();
+      const step = document.getElementById(id);
+      const cb = step.querySelector('.step-cb');
+      cb.classList.toggle('checked');
+      if (cb.classList.contains('checked')) {
+        cb.textContent = '✓';
+        step.classList.add('done');
+      } else {
+        cb.textContent = '';
+        step.classList.remove('done');
+      }
+    }
+  </script>
+
+</body>
+
+</html>
