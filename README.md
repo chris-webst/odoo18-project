@@ -8,7 +8,7 @@ Průvodce je soubor [`community_local_installation.html`](community_local_instal
 
 **Běžná cesta:** po stažení nebo naklonování repozitáře soubor otevři v prohlížeči — dvojklikem ve složce, nebo náhled / Live Server v editoru.
 
-**Volitelně z prohlížeče bez klonu:** u tohoto repa je zapnutý [GitHub Pages](https://pages.github.com/) náhled — **[otevřít průvodce online](https://chris-webst.github.io/odoo18-project/community_local_installation.html#installation-checklist)**.
+**Volitelně z prohlížeče bez klonu:** u tohoto repa je zapnutý [GitHub Pages](https://pages.github.com/) náhled — **[otevřít průvodce online](https://chris-webst.github.io/odoo18-project/local_installation.html#installation-checklist)**.
 
 Bez licenčního přístupu k Odoo Enterprise můžeš podle návodu spustit Odoo 18 ve verzi **Community**; Enterprise je v průvodci volitelný krok.
 
