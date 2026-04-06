@@ -4,7 +4,7 @@ Tento repozitář má sloužit jako **šablona/checklist pro lokální běh Odoo
 
 ## Interaktivní instalační checklist
 
-Průvodce je soubor [`community_local_installation.html`](community_local_installation.html) — samostatná stránka s postupem pro **macOS** a **Windows**, rozbalovacími kroky a zaškrtáváním.
+Průvodce je soubor [`local_installation.html`](local_installation.html) — samostatná stránka s postupem pro **macOS** a **Windows**, rozbalovacími kroky a zaškrtáváním.
 
 **Běžná cesta:** po stažení nebo naklonování repozitáře soubor otevři v prohlížeči — dvojklikem ve složce, nebo náhled / Live Server v editoru.
 
@@ -14,7 +14,7 @@ Bez licenčního přístupu k Odoo Enterprise můžeš podle návodu spustit Odo
 
 ## Co je v repozitáři (v kostce)
 
-- **[`community_local_installation.html`](community_local_installation.html)** — Interaktivní průvodce (Docker, složky, Enterprise atd.).
+- **[`local_installation.html`](local_installation.html)** — Interaktivní průvodce (Docker, složky, Enterprise atd.).
 
 - **[`docker-compose.yml`](docker-compose.yml)** — Spouští Odoo (web) a PostgreSQL. Řádek se `src/` nechávej zakomentovaný, dokud nemáš stažený Enterprise kód.
 
