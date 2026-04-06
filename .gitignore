@@ -4,6 +4,7 @@
 .env
 .env.*
 *.secret
+ config/odoo.conf  # toto je heslo pro správu databází, nesmí být veřejně dostupné
 
 # ── ENTERPRISE KÓD (src/) ────────────────────────────────────────────────────
 # Enterprise kód patří Odoo SA — jeho nahrání na GitHub porušuje licenci.
