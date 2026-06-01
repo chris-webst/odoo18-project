@@ -748,22 +748,23 @@
             </p>
             <p><strong>Vytvoření složek:</strong> Piš příkazy přesně jak jsou napsané a po každém stiskni Enter.</p>
             <div class="cmd"><span class="c"># Přejdi na Plochu (Desktop)</span>
-cd ~/Desktop
+              cd ~/Desktop
 
-<span class="c"># Vytvoř hlavní složku projektu</span>
-mkdir odoo18-project
+              <span class="c"># Vytvoř hlavní složku projektu</span>
+              mkdir odoo18-project
 
-<span class="c"># Vstup do nové složky</span>
-cd odoo18-project
+              <span class="c"># Vstup do nové složky</span>
+              cd odoo18-project
 
-<span class="c"># Vytvoř tři podsložky najednou:
-  # addons = vlastní moduly (vývoj na míru)
-  # config = konfigurační soubory Odoo
-  # src = Enterprise kód stažený z GitHubu</span>
-mkdir addons config src</div>
-            <p><strong>Otevření projektu v Cursoru:</strong></p>
-            <div class="cmd"><span class="c"># Tečka = "tato složka" — Cursor otevře aktuální adresář</span>
-cursor .</div>
+              <span class="c"># Vytvoř tři podsložky najednou:
+                # addons = vlastní moduly (vývoj na míru)
+                # config = konfigurační soubory Odoo
+                # src = Enterprise kód stažený z GitHubu</span>
+              mkdir addons config src
+            </div>
+            <p><strong>Otevření projektu v Cursoru:</strong><br>
+              Otevři aplikaci Cursor ručně (z Launchpadu nebo složky Aplikace). V horním menu klikni na <strong>File → Open Folder...</strong> a vyber složku <code>~/Desktop/odoo18-project</code>.
+              Potvrď <strong>Open</strong>.</p>
             <div class="box box-ok"><strong>Hotovo, když:</strong> V levém panelu Cursoru vidíš složky addons, config a
               src.</div>
           </div>
@@ -791,50 +792,52 @@ cursor .</div>
               tohoto souboru Docker neví co má dělat.</p>
             <p><strong>Vytvoření souboru:</strong></p>
             <div class="cmd"><span class="c"># Příkaz touch vytvoří prázdný soubor</span>
-touch docker-compose.yml</div>
+              touch docker-compose.yml</div>
             <p>V levém panelu Cursoru klikni na <strong>docker-compose.yml</strong> a vlož celý tento obsah (označ vše
               Cmd+A, smaž a vlož):</p>
             <div class="cmd"><span class="c"># Zde definujeme všechny "stroje" (services), které Docker spustí</span>
-services:
+              services:
 
-  <span class="c"># ── BACKEND: DATABÁZE ──────────────────────────────────────────
-  # PostgreSQL ukládá všechna data Odoo na disk.
-  # Je to zálohovací systém bez vlastního UI — čistý trezor na data.</span>
-  db:
-    image: postgres:15 <span class="c"># Přesná verze PostgreSQL, kterou Odoo 18 potřebuje</span>
-    environment:
-      - POSTGRES_DB=postgres <span class="c"># Název výchozí databáze</span>
-      - POSTGRES_USER=odoo <span class="c"># Uživatel, přes kterého se Odoo připojuje k DB</span>
-      - POSTGRES_PASSWORD=odoo <span class="c"># Heslo tohoto uživatele (interní, ty ho nikdy nezadáváš)</span>
-    volumes:
-      <span class="c"># Data se ukládají do pojmenovaného svazku.
-      # Díky tomu nepřijdeš o data ani když Docker vypneš.</span>
-      - odoo-db-data:/var/lib/postgresql/data
+              <span class="c"># ── BACKEND: DATABÁZE ──────────────────────────────────────────
+                # PostgreSQL ukládá všechna data Odoo na disk.
+                # Je to zálohovací systém bez vlastního UI — čistý trezor na data.</span>
+              db:
+              image: postgres:15 <span class="c"># Přesná verze PostgreSQL, kterou Odoo 18 potřebuje</span>
+              environment:
+              - POSTGRES_DB=postgres <span class="c"># Název výchozí databáze</span>
+              - POSTGRES_USER=odoo <span class="c"># Uživatel, přes kterého se Odoo připojuje k DB</span>
+              - POSTGRES_PASSWORD=odoo <span class="c"># Heslo tohoto uživatele (interní, ty ho nikdy nezadáváš)</span>
+              volumes:
+              <span class="c"># Data se ukládají do pojmenovaného svazku.
+                # Díky tomu nepřijdeš o data ani když Docker vypneš.</span>
+              - odoo-db-data:/var/lib/postgresql/data
 
-  <span class="c"># ── FRONTEND: ODOO ─────────────────────────────────────────────
-  # Odoo je webová aplikace — to co vidíš v prohlížeči.
-  # Čte data z backendu (PostgreSQL) a zobrazuje je jako UI.</span>
-  web:
-    image: odoo:18.0 <span class="c"># Oficiální Odoo 18 image z Docker Hubu</span>
-    depends_on:
-      - db <span class="c"># Odoo počká, až se nejdřív spustí databáze</span>
-    ports:
-      <span class="c"># 127.0.0.1 je loopback adresa — existuje jen uvnitř tvého počítače
-      # a nikdy neopustí síťovou kartu. Nikdo na stejné Wi-Fi se nepřipojí.</span>
-      - "127.0.0.1:8069:8069"
-    volumes:
-      <span class="c"># Propojení složek na tvém počítači se složkami uvnitř kontejneru.</span>
-      - ./config:/etc/odoo <span class="c"># Tvůj odoo.conf → dovnitř kontejneru</span>
-      - ./addons:/mnt/extra-addons/custom <span class="c"># Tvoje vlastní (custom) moduly</span>
-      # - ./src:/mnt/extra-addons/enterprise <span class="c"># Až budeš instalovat Enterprise moduly, odkomentuj tento řádek</span>
-    environment:
-      - HOST=db <span class="c"># Říká Odoo: databázi najdeš pod názvem "db" (název služby výše)</span>
-      - USER=odoo <span class="c"># Uživatel pro připojení k DB (musí sedět s POSTGRES_USER)</span>
-      - PASSWORD=odoo <span class="c"># Heslo (musí sedět s POSTGRES_PASSWORD)</span>
+              <span class="c"># ── FRONTEND: ODOO ─────────────────────────────────────────────
+                # Odoo je webová aplikace — to co vidíš v prohlížeči.
+                # Čte data z backendu (PostgreSQL) a zobrazuje je jako UI.</span>
+              web:
+              image: odoo:18.0 <span class="c"># Oficiální Odoo 18 image z Docker Hubu</span>
+              depends_on:
+              - db <span class="c"># Odoo počká, až se nejdřív spustí databáze</span>
+              ports:
+              <span class="c"># 127.0.0.1 je loopback adresa — existuje jen uvnitř tvého počítače
+                # a nikdy neopustí síťovou kartu. Nikdo na stejné Wi-Fi se nepřipojí.</span>
+              - "127.0.0.1:8069:8069"
+              volumes:
+              <span class="c"># Propojení složek na tvém počítači se složkami uvnitř kontejneru.</span>
+              - ./config:/etc/odoo <span class="c"># Tvůj odoo.conf → dovnitř kontejneru</span>
+              - ./addons:/mnt/extra-addons/custom <span class="c"># Tvoje vlastní (custom) moduly</span>
+              # - ./src:/mnt/extra-addons/enterprise <span class="c"># Až budeš instalovat Enterprise moduly, odkomentuj
+                tento řádek</span>
+              environment:
+              - HOST=db <span class="c"># Říká Odoo: databázi najdeš pod názvem "db" (název služby výše)</span>
+              - USER=odoo <span class="c"># Uživatel pro připojení k DB (musí sedět s POSTGRES_USER)</span>
+              - PASSWORD=odoo <span class="c"># Heslo (musí sedět s POSTGRES_PASSWORD)</span>
 
-<span class="c"># Pojmenovaný svazek — Docker ho spravuje sám, data přežijí restart</span>
-volumes:
-  odoo-db-data:</div>
+              <span class="c"># Pojmenovaný svazek — Docker ho spravuje sám, data přežijí restart</span>
+              volumes:
+              odoo-db-data:
+            </div>
             <p>Ulož soubor zkratkou <strong>Cmd+S</strong>.</p>
             <div class="box box-warn"><strong>Pozor na odsazení:</strong> YAML soubory používají mezery (ne tabulátor
               Tab) pro strukturu — každá úroveň jsou dvě mezery. Díky zapnutému Format on Save se odsazení při uložení
@@ -860,24 +863,27 @@ volumes:
             <p><strong>Co je tento soubor?</strong> Říká Odoo kde hledat moduly a jaké je hlavní administrátorské heslo
               pro správu databází. Musí ležet ve složce <strong>config/</strong> — jinak ho Odoo nenajde.</p>
             <div class="cmd"><span class="c"># Vytvoří soubor ve správné podsložce</span>
-touch config/odoo.conf</div>
+              touch config/odoo.conf</div>
             <p>V levém panelu klikni na složku <strong>config</strong> → soubor <strong>odoo.conf</strong> a vlož:</p>
-            <div class="cmd"><span class="c"># Tato hlavička MUSÍ být na prvním řádku — bez ní Odoo celý soubor ignoruje</span>
-[options]
+            <div class="cmd"><span class="c"># Tato hlavička MUSÍ být na prvním řádku — bez ní Odoo celý soubor
+                ignoruje</span>
+              [options]
 
-<span class="c"># Cesty kde Odoo hledá moduly — oddělené čárkou, bez mezer
-# custom = tvoje složka addons/ (moduly na míru)
-# enterprise = složka src/ (Enterprise kód z GitHubu Odoo)
-# /usr/... = vestavěné moduly přímo v Docker image Odoo</span>
-addons_path = /mnt/extra-addons/custom,/mnt/extra-addons/enterprise,/usr/lib/python3/dist-packages/odoo/addons
+              <span class="c"># Cesty kde Odoo hledá moduly — oddělené čárkou, bez mezer
+                # custom = tvoje složka addons/ (moduly na míru)
+                # enterprise = složka src/ (Enterprise kód z GitHubu Odoo)
+                # /usr/... = vestavěné moduly přímo v Docker image Odoo</span>
+              addons_path =
+              /mnt/extra-addons/custom,/mnt/extra-addons/enterprise,/usr/lib/python3/dist-packages/odoo/addons
 
-<span class="c"># Složka pro dočasná data Odoo (session soubory, nahrané přílohy)</span>
-data_dir = /var/lib/odoo
+              <span class="c"># Složka pro dočasná data Odoo (session soubory, nahrané přílohy)</span>
+              data_dir = /var/lib/odoo
 
-<span class="c"># Master Password — heslo pro správu databází (vytváření, mazání, zálohy)
-# TOTO NENÍ heslo pro přihlášení do Odoo — to si nastavíš v prohlížeči
-# Zvol si vlastní silné heslo a zapamatuj si ho</span>
-admin_passwd = zvol_si_vlastni_heslo</div>
+              <span class="c"># Master Password — heslo pro správu databází (vytváření, mazání, zálohy)
+                # TOTO NENÍ heslo pro přihlášení do Odoo — to si nastavíš v prohlížeči
+                # Zvol si vlastní silné heslo a zapamatuj si ho</span>
+              admin_passwd = zvol_si_vlastni_heslo
+            </div>
             <p>Ulož <strong>Cmd+S</strong>.</p>
             <div class="box box-warn"><strong>Kriticky důležité:</strong> První řádek musí být vždy
               <code>[options]</code> včetně hranatých závorek. Bez tohoto "nadpisu sekce" Odoo celý soubor ignoruje a
@@ -960,7 +966,7 @@ admin_passwd = zvol_si_vlastni_heslo</div>
           <div class="step-body">
             <p><strong>Před spuštěním ověř, že Docker běží:</strong> Otevři terminál v Cursoru (Ctrl+`) a zadej:</p>
             <div class="cmd"><span class="c"># Ověření že Docker je spuštěný a terminál ho vidí</span>
-docker --version</div>
+              docker --version</div>
             <div class="output">Docker version 27.3.1, build ce12230</div>
             <p>Pokud terminál napíše "command not found", Docker Desktop není spuštěný — otevři ho z Launchpadu a počkej
               na ikonku velryby v systémové liště macOS.</p>
@@ -970,18 +976,18 @@ docker --version</div>
             <div class="cmd">cd ~/Desktop/odoo18-project</div>
             <p><strong>Spuštění:</strong></p>
             <div class="cmd"><span class="c"># -d = detached, kontejnery běží na pozadí a terminál zůstane volný</span>
-docker compose up -d</div>
+              docker compose up -d</div>
             <p>Docker stáhne obrazy PostgreSQL 15 a Odoo 18.0 (řádky s textem "Pulling"). První stažení trvá 5–15 minut.
             </p>
             <p><strong>Správný výstup po spuštění:</strong></p>
             <div class="output">✔ Container odoo18-project-db-1 Started
-✔ Container odoo18-project-web-1 Started</div>
+              ✔ Container odoo18-project-web-1 Started</div>
             <p><strong>Ověření stavu:</strong></p>
             <div class="cmd"><span class="c"># Zobrazí stav všech kontejnerů — u obou musí být "running"</span>
-docker compose ps</div>
+              docker compose ps</div>
             <p><strong>Zobrazení logů</strong> (co Odoo dělá uvnitř, kde jsou chyby):</p>
             <div class="cmd"><span class="c"># -f = sleduj průběžně. Ukončíš Ctrl+C — Odoo tím nevypneš</span>
-docker compose logs -f web</div>
+              docker compose logs -f web</div>
             <div class="box box-warn"><strong>Nejčastější chyba — "command not found":</strong> Docker Desktop není
               spuštěný. Otevři ho z Launchpadu.</div>
             <div class="box box-warn"><strong>Pozor na pomlčku:</strong> Správně je <code>docker compose</code>
@@ -1060,19 +1066,156 @@ docker compose logs -f web</div>
             </div>
           </div>
           <div class="step-body">
-            <p><strong>Jednoduché pravidlo:</strong> do <code>src/</code> patří pouze složky s Enterprise moduly, do <code>addons/</code> patří pouze složky s tvými custom moduly.</p>
+            <p><strong>Jednoduché pravidlo:</strong> do <code>src/</code> patří pouze složky s Enterprise moduly, do
+              <code>addons/</code> patří pouze složky s tvými custom moduly.</p>
             <p><strong>1) Zkontroluj obsah složek.</strong></p>
-            <p><strong>2) Pokud je <code>src/</code> prázdné, nahraj do něj Enterprise moduly</strong> (např. klonem z oficiálního repozitáře Odoo). <strong>Pokud je <code>addons/</code> prázdné, nahraj do něj tvoje custom moduly.</strong></p>
-            <p><strong>3) Odkomentuj řádek <code>./src:/mnt/extra-addons/enterprise</code> v <code>docker-compose.yml</code> a restartuj kontejnery:</strong></p>
+            <p><strong>2) Pokud je <code>src/</code> prázdné, nahraj do něj Enterprise moduly.</strong></p>
+            <div class="box box-tip"><strong>Kde vzít Enterprise moduly?</strong>
+              Odoo Enterprise kód je dostupný pouze s platnou licencí.
+              Existuje několik způsobů, jak ho získat — uvádíme dva nejběžnější:
+              <br><br>
+              <strong>a) GitHub (pro partnery a zákazníky s aktivní licencí):</strong><br>
+              Odoo ti po zakoupení licence přidá přístup k soukromému repozitáři
+              <code>github.com/odoo/enterprise</code>. Naklonuješ si ho příkazem
+              <code>git clone git@github.com:odoo/enterprise.git --branch 18.0 --depth 1 src/</code>
+              <br><br>
+              <strong>b) Od tvého Odoo partnera / integrátora:</strong><br>
+              Pokud jsi koncový zákazník, požádej svého implementačního partnera o Enterprise zdrojáky pro
+              lokální vývoj. Partner má přístup přes GitHub a může ti kód poskytnout.
+              <br><br>
+              <strong>Licence:</strong> Enterprise kód nesmíš nahrát na veřejný GitHub.
+              Proto je <code>src/</code> v <code>.gitignore</code>.
+            </div>
+            <p><strong>3) Pokud je <code>addons/</code> prázdné, nahraj do něj tvoje custom moduly.</strong></p>
+            <p><strong>4) Odkomentuj řádek <code>./src:/mnt/extra-addons/enterprise</code> v
+                <code>docker-compose.yml</code> a restartuj kontejnery:</strong></p>
             <div class="cmd">docker compose down
 docker compose up -d</div>
-            <p><strong>4) Aktivuj Enterprise UI pro svou databázi:</strong></p>
-            <div class="cmd"><span class="c"># Dosaď vlastní hodnoty: název DB za odoo18_project_test, případně i --db_user a --db_password podle svého nastavení</span>
+            <p><strong>5) Aktivuj Enterprise UI pro svou databázi:</strong></p>
+            <div class="cmd"><span class="c"># Dosaď vlastní hodnoty: název DB za odoo18_project_test, případně i
+# --db_user a --db_password podle svého nastavení</span>
 docker compose exec web odoo -d odoo18_project_test -i web_enterprise --stop-after-init --db_host=db --db_user=odoo --db_password=odoo</div>
-            <p><strong>5) Ověř instalaci:</strong></p>
+            <p><strong>6) Ověř instalaci:</strong></p>
             <div class="cmd">docker compose exec db psql -U odoo -d odoo18_project_test -c "SELECT name, state FROM ir_module_module WHERE name='web_enterprise';"</div>
             <div class="output">web_enterprise | installed</div>
-            <div class="box box-ok"><strong>Hotovo, když:</strong> SQL vrátí <code>installed</code> a po obnovení stránky vidíš Enterprise rozhraní.</div>
+            <div class="box box-ok"><strong>Hotovo, když:</strong> SQL vrátí <code>installed</code> a po obnovení
+              stránky vidíš Enterprise rozhraní.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-label">Fáze 8 — Import zálohy z Odoo.sh</div>
+
+        <div class="step" id="mac-s11">
+          <div class="step-header" onclick="toggle('mac-s11')">
+            <div class="step-num green">11</div>
+            <div class="step-info">
+              <div class="step-name">Import zálohy databáze z Odoo.sh (macOS)</div>
+              <div class="step-hint">Stažení, neutralizace a nahrání produkční/stagingové zálohy do lokálního prostředí</div>
+            </div>
+            <div class="step-right">
+              <div class="step-cb" onclick="check(event,'mac-s11')"></div>
+              <div class="step-arrow">▶</div>
+            </div>
+          </div>
+          <div class="step-body">
+            <div class="box box-danger"><strong>Stahuj vždy neutralizovanou zálohu!</strong>
+              Záloha z produkce obsahuje skutečná data zákazníků, e-maily, hesla a API klíče.
+              Bez neutralizace hrozí:
+              <br>- odeslání reálných e-mailů z lokálního prostředí,
+              <br>- nechtěné volání platebních bran nebo externích API,
+              <br>- únik osobních údajů.
+              <br><br>
+              <strong>Při stahování z Odoo.sh vždy zaškrtni "Neutralize database".</strong>
+              Neneutralizovanou zálohu do lokálního prostředí nenahrávej.
+            </div>
+
+            <p><strong>1) Stažení zálohy z Odoo.sh:</strong></p>
+            <ol>
+              <li>Přihlas se na <strong>odoo.sh</strong> → vyber projekt → vyber větev (staging nebo production).</li>
+              <li>Klikni na <strong>Backups</strong> v pravém panelu.</li>
+              <li>U požadované zálohy klikni na <strong>Download</strong>.</li>
+              <li><strong>Zaškrtni "Neutralize database"</strong> — povinný krok! Odoo automaticky:
+                <br>- deaktivuje odesílání e-mailů,
+                <br>- vypne cron joby,
+                <br>- nahradí citlivé údaje placeholdery.
+              </li>
+              <li>Stáhne se soubor typu <code>backup_YYYY-MM-DD.zip</code>.</li>
+            </ol>
+
+            <p><strong>2) Nahraj zálohu přes Odoo Database Manager:</strong></p>
+            <ol>
+              <li>Ujisti se, že Docker kontejnery běží (<code>docker compose up -d</code>).</li>
+              <li>Otevři v prohlížeči: <code>http://localhost:8069/web/database/manager</code></li>
+              <li>Klikni na <strong>Restore Database</strong>.</li>
+              <li><strong>Master Password</strong> — heslo z <code>config/odoo.conf</code> (hodnota <code>admin_passwd</code>).</li>
+              <li><strong>File</strong> — vyber stažený <code>.zip</code> soubor přímo bez rozbalování.</li>
+              <li><strong>Database Name</strong> — zvol název, např. <code>odoo_staging</code>.</li>
+              <li>Zaškrtni <strong>"This database is a copy"</strong>.</li>
+              <li>Zaškrtni <strong>"Neutralize the database"</strong> (pokud je volba k dispozici) — deaktivuje e-mailové servery, cron joby a platební brány přímo při importu. Doporučujeme zaškrtnout vždy, i když byla záloha neutralizována při stažení z Odoo.sh.</li>
+              <li>Klikni na <strong>Continue</strong> a počkej — import může trvat i několik minut podle velikosti.</li>
+            </ol>
+            <div class="box box-tip"><strong>Proč nerozbalovat?</strong>
+              Odoo Database Manager umí importovat přímo .zip soubor — rozbalí ho sám,
+              nahraje SQL dump i filestore (přílohy, obrázky) automaticky.</div>
+
+            <p><strong>3) Ověření:</strong></p>
+            <p>Otevři <code>http://localhost:8069</code> a na přihlašovací stránce vyber databázi
+              <code>odoo_staging</code>. Přihlas se svými přihlašovacími údaji z Odoo.sh
+              (neutralizace hesla nemění).</p>
+
+            <div class="box box-ok"><strong>Hotovo, když:</strong> Vidíš data z Odoo.sh zálohy v lokálním prostředí,
+              e-maily se neodesílají a cron joby jsou vypnuté.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-label">Fáze 9 — Oprava přístupu po importu</div>
+
+        <div class="step" id="mac-s12">
+          <div class="step-header" onclick="toggle('mac-s12')">
+            <div class="step-num amber">12</div>
+            <div class="step-info">
+              <div class="step-name">Vypnutí 2FA — pokud tě TOTP zablokuje po importu</div>
+              <div class="step-hint">Záloha přináší TOTP secret, tvůj autentikátor ho nezná</div>
+            </div>
+            <div class="step-right">
+              <div class="step-cb" onclick="check(event,'mac-s12')"></div>
+              <div class="step-arrow">▶</div>
+            </div>
+          </div>
+          <div class="step-body">
+            <div class="box box-warn"><strong>Proč k tomu dochází?</strong>
+              Importovaná záloha obsahuje zapnuté 2FA (TOTP) pro uživatelský účet. Po importu tvůj mobilní autentikátor nezná nový TOTP secret — přihlášení selže na druhém kroku.
+              Neutralizace tuto vazbu neresetuje.</div>
+
+            <p><strong>1) Spusť Odoo shell</strong> (nahraď <code>NAZEV_DATABAZE</code> skutečným názvem, např. <code>odoo_staging</code>):</p>
+            <div class="cmd"><span class="c"># Pokud stack neběží:</span>
+docker compose run --rm -it web odoo shell -d NAZEV_DATABAZE
+
+<span class="c"># Pokud stack již běží:</span>
+docker compose exec -it web odoo shell -d NAZEV_DATABAZE</div>
+
+            <p><strong>2) V Python konzoli zadej řádky jeden po druhém</strong> (Enter po každém — nevkládej více řádků najednou):</p>
+            <div class="cmd">u = env["res.users"].search([("login", "=", "tvuj@email.cz")], limit=1)</div>
+            <div class="cmd">u.sudo().write({"totp_secret": False})</div>
+            <div class="cmd">u.sudo()._revoke_all_devices()</div>
+            <div class="cmd">env.cr.commit()</div>
+            <div class="cmd">u.totp_enabled  <span class="c"># ověření — musí vrátit False</span></div>
+            <div class="cmd">exit()</div>
+
+            <div class="box box-danger"><strong>env.cr.commit() je povinný!</strong>
+              Bez commit() se změna po zavření shellu automaticky odroluje zpět.
+              Nesouvisí s Gitem — zapisuje transakci do PostgreSQL.</div>
+
+            <p><strong>3) Přihlas se jen heslem</strong> — formulář bude vyžadovat pouze e-mail a heslo.</p>
+
+            <p><strong>Login nenalezen?</strong> Ověř přesný tvar přihlašovacího e-mailu:</p>
+            <div class="cmd">env["res.users"].search([("login", "ilike", "tvoje%")]).mapped("login")</div>
+
+            <div class="box box-ok"><strong>Hotovo, když:</strong> <code>u.totp_enabled</code> vrátí <code>False</code> a přihlášení do lokální databáze funguje bez autentikátoru.</div>
           </div>
         </div>
       </div>
@@ -1161,19 +1304,20 @@ docker compose exec web odoo -d odoo18_project_test -i web_enterprise --stop-aft
             <hr class="sep">
             <p><strong>Každodenní příkazy pro Odoo:</strong></p>
             <div class="cmd"><span class="c"># Spuštění Odoo (po restartu počítače nebo po "down")</span>
-docker compose up -d
+              docker compose up -d
 
-<span class="c"># Zastavení Odoo — BEZPEČNÉ, data zůstanou zachována</span>
-docker compose down
+              <span class="c"># Zastavení Odoo — BEZPEČNÉ, data zůstanou zachována</span>
+              docker compose down
 
-<span class="c"># Zobrazení stavu kontejnerů</span>
-docker compose ps
+              <span class="c"># Zobrazení stavu kontejnerů</span>
+              docker compose ps
 
-<span class="c"># Sledování logů Odoo v reálném čase (ukončit: Ctrl+C)</span>
-docker compose logs -f web
+              <span class="c"># Sledování logů Odoo v reálném čase (ukončit: Ctrl+C)</span>
+              docker compose logs -f web
 
-<span class="c"># Restart po změně konfiguračních souborů</span>
-docker compose down && docker compose up -d</div>
+              <span class="c"># Restart po změně konfiguračních souborů</span>
+              docker compose down && docker compose up -d
+            </div>
             <div class="box box-danger"><strong>Toto smaže všechna data — používej jen záměrně:</strong>
               <code>docker compose down -v</code> — parametr -v smaže i datové svazky včetně celé databáze. Bez
               parametru -v jsou data v bezpečí.
@@ -1245,7 +1389,7 @@ docker compose down && docker compose up -d</div>
             <p><strong>Instalace WSL2:</strong> Klikni pravým tlačítkem na tlačítko Start a vyber <strong>"Windows
                 PowerShell (admin)"</strong> nebo <strong>"Terminál (admin)"</strong>. Zadej příkaz:</p>
             <div class="cmd"><span class="c"># Nainstaluje WSL2 i výchozí Linux distribuci (Ubuntu)</span>
-wsl --install</div>
+              wsl --install</div>
             <p>Po dokončení restartuj počítač.</p>
             <div class="box box-warn"><strong>Windows 10 vs 11:</strong> Na Windows 10 musíš mít verzi 2004 nebo novější
               (Build 19041+). Zkontroluj přes Nastavení → Systém → O aplikaci Windows.</div>
@@ -1357,29 +1501,29 @@ wsl --install</div>
             </p>
             <p><strong>Vytvoření složek:</strong> Piš příkazy přesně jak jsou napsané a po každém stiskni Enter.</p>
             <div class="cmd"><span class="c"># Přejdi na Plochu (Desktop)
-  # Na Windows použij $HOME místo ~ (obojí vede do domovské složky)</span>
-cd $HOME\Desktop
+                # Na Windows použij $HOME místo ~ (obojí vede do domovské složky)</span>
+              cd $HOME\Desktop
 
-<span class="c"># Vytvoř hlavní složku projektu</span>
-mkdir odoo18-project
+              <span class="c"># Vytvoř hlavní složku projektu</span>
+              mkdir odoo18-project
 
-<span class="c"># Vstup do nové složky</span>
-cd odoo18-project
+              <span class="c"># Vstup do nové složky</span>
+              cd odoo18-project
 
-<span class="c"># Vytvoř tři podsložky najednou:
-  # addons = vlastní moduly (vývoj na míru)
-  # config = konfigurační soubory Odoo
-  # src = Enterprise kód stažený z GitHubu
-  # Na Windows odděluj názvy čárkou</span>
-mkdir addons, config, src</div>
+              <span class="c"># Vytvoř tři podsložky najednou:
+                # addons = vlastní moduly (vývoj na míru)
+                # config = konfigurační soubory Odoo
+                # src = Enterprise kód stažený z GitHubu
+                # Na Windows odděluj názvy čárkou</span>
+              mkdir addons, config, src
+            </div>
             <p><strong>Vytvoření konfiguračních souborů:</strong> Na Windows se místo příkazu <code>touch</code> (macOS)
               používá <code>New-Item</code> — výsledek je stejný, prázdný soubor.</p>
             <div class="cmd"><span class="c"># New-Item je Windows ekvivalent příkazu touch</span>
-New-Item docker-compose.yml
-New-Item config\odoo.conf</div>
-            <p><strong>Otevření projektu v Cursoru:</strong></p>
-            <div class="cmd"><span class="c"># Tečka = "tato složka" — Cursor otevře aktuální adresář</span>
-cursor .</div>
+              New-Item docker-compose.yml
+              New-Item config\odoo.conf</div>
+            <p><strong>Otevření projektu v Cursoru:</strong><br>
+              Otevři aplikaci Cursor ručně (z nabídky Start nebo Plochy). V horním menu klikni na <strong>File → Open Folder...</strong> a vyber složku <code>C:\Users\TVOJE_JMENO\Desktop\odoo18-project</code>. Potvrď <strong>Open</strong>.</p>
             <div class="box box-ok"><strong>Hotovo, když:</strong> V levém panelu Cursoru vidíš složky addons, config a
               src.</div>
           </div>
@@ -1411,46 +1555,48 @@ cursor .</div>
               <strong>Ctrl+A</strong>, smaž a vlož):
             </p>
             <div class="cmd"><span class="c"># Zde definujeme všechny "stroje" (services), které Docker spustí</span>
-services:
+              services:
 
-  <span class="c"># ── BACKEND: DATABÁZE ──────────────────────────────────────────
-  # PostgreSQL ukládá všechna data Odoo na disk.
-  # Je to zálohovací systém bez vlastního UI — čistý trezor na data.</span>
-  db:
-    image: postgres:15 <span class="c"># Přesná verze PostgreSQL, kterou Odoo 18 potřebuje</span>
-    environment:
-      - POSTGRES_DB=postgres <span class="c"># Název výchozí databáze</span>
-      - POSTGRES_USER=odoo <span class="c"># Uživatel, přes kterého se Odoo připojuje k DB</span>
-      - POSTGRES_PASSWORD=odoo <span class="c"># Heslo tohoto uživatele (interní, ty ho nikdy nezadáváš)</span>
-    volumes:
-      <span class="c"># Data se ukládají do pojmenovaného svazku.
-      # Díky tomu nepřijdeš o data ani když Docker vypneš.</span>
-      - odoo-db-data:/var/lib/postgresql/data
+              <span class="c"># ── BACKEND: DATABÁZE ──────────────────────────────────────────
+                # PostgreSQL ukládá všechna data Odoo na disk.
+                # Je to zálohovací systém bez vlastního UI — čistý trezor na data.</span>
+              db:
+              image: postgres:15 <span class="c"># Přesná verze PostgreSQL, kterou Odoo 18 potřebuje</span>
+              environment:
+              - POSTGRES_DB=postgres <span class="c"># Název výchozí databáze</span>
+              - POSTGRES_USER=odoo <span class="c"># Uživatel, přes kterého se Odoo připojuje k DB</span>
+              - POSTGRES_PASSWORD=odoo <span class="c"># Heslo tohoto uživatele (interní, ty ho nikdy nezadáváš)</span>
+              volumes:
+              <span class="c"># Data se ukládají do pojmenovaného svazku.
+                # Díky tomu nepřijdeš o data ani když Docker vypneš.</span>
+              - odoo-db-data:/var/lib/postgresql/data
 
-  <span class="c"># ── FRONTEND: ODOO ─────────────────────────────────────────────
-  # Odoo je webová aplikace — to co vidíš v prohlížeči.
-  # Čte data z backendu (PostgreSQL) a zobrazuje je jako UI.</span>
-  web:
-    image: odoo:18.0 <span class="c"># Oficiální Odoo 18 image z Docker Hubu</span>
-    depends_on:
-      - db <span class="c"># Odoo počká, až se nejdřív spustí databáze</span>
-    ports:
-      <span class="c"># 127.0.0.1 je loopback adresa — existuje jen uvnitř tvého počítače
-      # a nikdy neopustí síťovou kartu. Nikdo na stejné Wi-Fi se nepřipojí.</span>
-      - "127.0.0.1:8069:8069"
-    volumes:
-      <span class="c"># Propojení složek na tvém počítači se složkami uvnitř kontejneru.</span>
-      - ./config:/etc/odoo <span class="c"># Tvůj odoo.conf → dovnitř kontejneru</span>
-      - ./addons:/mnt/extra-addons/custom <span class="c"># Tvoje vlastní (custom) moduly</span>
-      # - ./src:/mnt/extra-addons/enterprise <span class="c"># Až budeš instalovat Enterprise moduly, odkomentuj tento řádek</span>
-    environment:
-      - HOST=db <span class="c"># Říká Odoo: databázi najdeš pod názvem "db" (název služby výše)</span>
-      - USER=odoo <span class="c"># Uživatel pro připojení k DB (musí sedět s POSTGRES_USER)</span>
-      - PASSWORD=odoo <span class="c"># Heslo (musí sedět s POSTGRES_PASSWORD)</span>
+              <span class="c"># ── FRONTEND: ODOO ─────────────────────────────────────────────
+                # Odoo je webová aplikace — to co vidíš v prohlížeči.
+                # Čte data z backendu (PostgreSQL) a zobrazuje je jako UI.</span>
+              web:
+              image: odoo:18.0 <span class="c"># Oficiální Odoo 18 image z Docker Hubu</span>
+              depends_on:
+              - db <span class="c"># Odoo počká, až se nejdřív spustí databáze</span>
+              ports:
+              <span class="c"># 127.0.0.1 je loopback adresa — existuje jen uvnitř tvého počítače
+                # a nikdy neopustí síťovou kartu. Nikdo na stejné Wi-Fi se nepřipojí.</span>
+              - "127.0.0.1:8069:8069"
+              volumes:
+              <span class="c"># Propojení složek na tvém počítači se složkami uvnitř kontejneru.</span>
+              - ./config:/etc/odoo <span class="c"># Tvůj odoo.conf → dovnitř kontejneru</span>
+              - ./addons:/mnt/extra-addons/custom <span class="c"># Tvoje vlastní (custom) moduly</span>
+              # - ./src:/mnt/extra-addons/enterprise <span class="c"># Až budeš instalovat Enterprise moduly, odkomentuj
+                tento řádek</span>
+              environment:
+              - HOST=db <span class="c"># Říká Odoo: databázi najdeš pod názvem "db" (název služby výše)</span>
+              - USER=odoo <span class="c"># Uživatel pro připojení k DB (musí sedět s POSTGRES_USER)</span>
+              - PASSWORD=odoo <span class="c"># Heslo (musí sedět s POSTGRES_PASSWORD)</span>
 
-<span class="c"># Pojmenovaný svazek — Docker ho spravuje sám, data přežijí restart</span>
-volumes:
-  odoo-db-data:</div>
+              <span class="c"># Pojmenovaný svazek — Docker ho spravuje sám, data přežijí restart</span>
+              volumes:
+              odoo-db-data:
+            </div>
             <p>Ulož soubor zkratkou <strong>Ctrl+S</strong>.</p>
             <div class="box box-warn"><strong>Pozor na odsazení:</strong> YAML soubory používají mezery (ne tabulátor
               Tab) pro strukturu — každá úroveň jsou dvě mezery. Díky zapnutému Format on Save se odsazení při uložení
@@ -1479,22 +1625,24 @@ volumes:
               naplníme obsahem.</p>
             <p>V levém panelu klikni na složku <strong>config</strong> → soubor <strong>odoo.conf</strong> a vlož:</p>
             <div class="cmd"><span class="c"># Tato hlavička MUSÍ být na prvním řádku — bez ní Odoo celý soubor
-  ignoruje</span>
-[options]
+                ignoruje</span>
+              [options]
 
-<span class="c"># Cesty kde Odoo hledá moduly — oddělené čárkou, bez mezer
-# custom = tvoje složka addons/ (moduly na míru)
-# enterprise = složka src/ (Enterprise kód z GitHubu Odoo)
-# /usr/... = vestavěné moduly přímo v Docker image Odoo</span>
-addons_path = /mnt/extra-addons/custom,/mnt/extra-addons/enterprise,/usr/lib/python3/dist-packages/odoo/addons
+              <span class="c"># Cesty kde Odoo hledá moduly — oddělené čárkou, bez mezer
+                # custom = tvoje složka addons/ (moduly na míru)
+                # enterprise = složka src/ (Enterprise kód z GitHubu Odoo)
+                # /usr/... = vestavěné moduly přímo v Docker image Odoo</span>
+              addons_path =
+              /mnt/extra-addons/custom,/mnt/extra-addons/enterprise,/usr/lib/python3/dist-packages/odoo/addons
 
-<span class="c"># Složka pro dočasná data Odoo (session soubory, nahrané přílohy)</span>
-data_dir = /var/lib/odoo
+              <span class="c"># Složka pro dočasná data Odoo (session soubory, nahrané přílohy)</span>
+              data_dir = /var/lib/odoo
 
-<span class="c"># Master Password — heslo pro správu databází (vytváření, mazání, zálohy)
-# TOTO NENÍ heslo pro přihlášení do Odoo — to si nastavíš v prohlížeči
-# Zvol si vlastní silné heslo a zapamatuj si ho</span>
-admin_passwd = zvol_si_vlastni_heslo</div>
+              <span class="c"># Master Password — heslo pro správu databází (vytváření, mazání, zálohy)
+                # TOTO NENÍ heslo pro přihlášení do Odoo — to si nastavíš v prohlížeči
+                # Zvol si vlastní silné heslo a zapamatuj si ho</span>
+              admin_passwd = zvol_si_vlastni_heslo
+            </div>
             <p>Ulož <strong>Ctrl+S</strong>.</p>
             <div class="box box-warn"><strong>Kriticky důležité:</strong> První řádek musí být vždy
               <code>[options]</code> včetně hranatých závorek. Bez tohoto "nadpisu sekce" Odoo celý soubor ignoruje a
@@ -1578,7 +1726,7 @@ admin_passwd = zvol_si_vlastni_heslo</div>
             <p><strong>Před spuštěním ověř, že Docker běží:</strong> Otevři terminál v Cursoru (<strong>Ctrl+`</strong>)
               a zadej:</p>
             <div class="cmd"><span class="c"># Ověření že Docker je spuštěný a terminál ho vidí</span>
-docker --version</div>
+              docker --version</div>
             <div class="output">Docker version 27.3.1, build ce12230</div>
             <p>Pokud terminál napíše "Tento příkaz nebyl rozpoznán", Docker Desktop není spuštěný — otevři ho z nabídky
               Start a počkej na ikonku velryby v oznamovací oblasti.</p>
@@ -1588,18 +1736,18 @@ docker --version</div>
             <div class="cmd">cd $HOME\Desktop\odoo18-project</div>
             <p><strong>Spuštění:</strong></p>
             <div class="cmd"><span class="c"># -d = detached, kontejnery běží na pozadí a terminál zůstane volný</span>
-docker compose up -d</div>
+              docker compose up -d</div>
             <p>Docker stáhne obrazy PostgreSQL 15 a Odoo 18.0 (řádky s textem "Pulling"). První stažení trvá 5–15 minut.
             </p>
             <p><strong>Správný výstup po spuštění:</strong></p>
             <div class="output">✔ Container odoo18-project-db-1 Started
-✔ Container odoo18-project-web-1 Started</div>
+              ✔ Container odoo18-project-web-1 Started</div>
             <p><strong>Ověření stavu:</strong></p>
             <div class="cmd"><span class="c"># Zobrazí stav všech kontejnerů — u obou musí být "running"</span>
-docker compose ps</div>
+              docker compose ps</div>
             <p><strong>Zobrazení logů</strong> (co Odoo dělá uvnitř, kde jsou chyby):</p>
             <div class="cmd"><span class="c"># -f = sleduj průběžně. Ukončíš Ctrl+C — Odoo tím nevypneš</span>
-docker compose logs -f web</div>
+              docker compose logs -f web</div>
             <div class="box box-warn"><strong>Nejčastější chyba — "příkaz nebyl rozpoznán":</strong> Docker Desktop není
               spuštěný. Otevři ho z nabídky Start.</div>
             <div class="box box-warn"><strong>Pozor na pomlčku:</strong> Správně je <code>docker compose</code>
@@ -1678,19 +1826,156 @@ docker compose logs -f web</div>
             </div>
           </div>
           <div class="step-body">
-            <p><strong>Jednoduché pravidlo:</strong> do <code>src/</code> patří pouze složky s Enterprise moduly, do <code>addons/</code> patří pouze složky s tvými custom moduly.</p>
+            <p><strong>Jednoduché pravidlo:</strong> do <code>src/</code> patří pouze složky s Enterprise moduly, do
+              <code>addons/</code> patří pouze složky s tvými custom moduly.</p>
             <p><strong>1) Zkontroluj obsah složek.</strong></p>
-            <p><strong>2) Pokud je <code>src/</code> prázdné, nahraj do něj Enterprise moduly</strong> (např. klonem z oficiálního repozitáře Odoo). <strong>Pokud je <code>addons/</code> prázdné, nahraj do něj tvé custom moduly.</strong></p>
-            <p><strong>3) Odkomentuj řádek <code>./src:/mnt/extra-addons/enterprise</code> v <code>docker-compose.yml</code> a restartuj kontejnery:</strong></p>
+            <p><strong>2) Pokud je <code>src/</code> prázdné, nahraj do něj Enterprise moduly.</strong></p>
+            <div class="box box-tip"><strong>Kde vzít Enterprise moduly?</strong>
+              Odoo Enterprise kód je dostupný pouze s platnou licencí.
+              Existuje několik způsobů, jak ho získat — uvádíme dva nejběžnější:
+              <br><br>
+              <strong>a) GitHub (pro partnery a zákazníky s aktivní licencí):</strong><br>
+              Odoo ti po zakoupení licence přidá přístup k soukromému repozitáři
+              <code>github.com/odoo/enterprise</code>. Naklonuješ si ho příkazem
+              <code>git clone git@github.com:odoo/enterprise.git --branch 18.0 --depth 1 src/</code>
+              <br><br>
+              <strong>b) Od tvého Odoo partnera / integrátora:</strong><br>
+              Pokud jsi koncový zákazník, požádej svého implementačního partnera o Enterprise zdrojáky pro
+              lokální vývoj. Partner má přístup přes GitHub a může ti kód poskytnout.
+              <br><br>
+              <strong>Licence:</strong> Enterprise kód nesmíš nahrát na veřejný GitHub.
+              Proto je <code>src/</code> v <code>.gitignore</code>.
+            </div>
+            <p><strong>3) Pokud je <code>addons/</code> prázdné, nahraj do něj tvé custom moduly.</strong></p>
+            <p><strong>4) Odkomentuj řádek <code>./src:/mnt/extra-addons/enterprise</code> v
+                <code>docker-compose.yml</code> a restartuj kontejnery:</strong></p>
             <div class="cmd">docker compose down
 docker compose up -d</div>
-            <p><strong>4) Aktivuj Enterprise UI pro svou databázi:</strong></p>
-            <div class="cmd"><span class="c"># Dosaď vlastní hodnoty: název DB za odoo18_project_test, případně i --db_user a --db_password podle svého nastavení</span>
+            <p><strong>5) Aktivuj Enterprise UI pro svou databázi:</strong></p>
+            <div class="cmd"><span class="c"># Dosaď vlastní hodnoty: název DB za odoo18_project_test, případně i
+# --db_user a --db_password podle svého nastavení</span>
 docker compose exec web odoo -d odoo18_project_test -i web_enterprise --stop-after-init --db_host=db --db_user=odoo --db_password=odoo</div>
-            <p><strong>5) Ověř instalaci:</strong></p>
+            <p><strong>6) Ověř instalaci:</strong></p>
             <div class="cmd">docker compose exec db psql -U odoo -d odoo18_project_test -c "SELECT name, state FROM ir_module_module WHERE name='web_enterprise';"</div>
             <div class="output">web_enterprise | installed</div>
-            <div class="box box-ok"><strong>Hotovo, když:</strong> SQL vrátí <code>installed</code> a po obnovení stránky na localhostu vidíš Enterprise rozhraní.</div>
+            <div class="box box-ok"><strong>Hotovo, když:</strong> SQL vrátí <code>installed</code> a po obnovení
+              stránky na localhostu vidíš Enterprise rozhraní.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-label">Fáze 8 — Import zálohy z Odoo.sh</div>
+
+        <div class="step" id="win-s11">
+          <div class="step-header" onclick="toggle('win-s11')">
+            <div class="step-num green">11</div>
+            <div class="step-info">
+              <div class="step-name">Import zálohy databáze z Odoo.sh (Windows)</div>
+              <div class="step-hint">Stažení, neutralizace a nahrání produkční/stagingové zálohy do lokálního prostředí</div>
+            </div>
+            <div class="step-right">
+              <div class="step-cb" onclick="check(event,'win-s11')"></div>
+              <div class="step-arrow">▶</div>
+            </div>
+          </div>
+          <div class="step-body">
+            <div class="box box-danger"><strong>Stahuj vždy neutralizovanou zálohu!</strong>
+              Záloha z produkce obsahuje skutečná data zákazníků, e-maily, hesla a API klíče.
+              Bez neutralizace hrozí:
+              <br>- odeslání reálných e-mailů z lokálního prostředí,
+              <br>- nechtěné volání platebních bran nebo externích API,
+              <br>- únik osobních údajů.
+              <br><br>
+              <strong>Při stahování z Odoo.sh vždy zaškrtni "Neutralize database".</strong>
+              Neneutralizovanou zálohu do lokálního prostředí nenahrávej.
+            </div>
+
+            <p><strong>1) Stažení zálohy z Odoo.sh:</strong></p>
+            <ol>
+              <li>Přihlas se na <strong>odoo.sh</strong> → vyber projekt → vyber větev (staging nebo production).</li>
+              <li>Klikni na <strong>Backups</strong> v pravém panelu.</li>
+              <li>U požadované zálohy klikni na <strong>Download</strong>.</li>
+              <li><strong>Zaškrtni "Neutralize database"</strong> — povinný krok! Odoo automaticky:
+                <br>- deaktivuje odesílání e-mailů,
+                <br>- vypne cron joby,
+                <br>- nahradí citlivé údaje placeholdery.
+              </li>
+              <li>Stáhne se soubor typu <code>backup_YYYY-MM-DD.zip</code>.</li>
+            </ol>
+
+            <p><strong>2) Nahraj zálohu přes Odoo Database Manager:</strong></p>
+            <ol>
+              <li>Ujisti se, že Docker kontejnery běží (<code>docker compose up -d</code>).</li>
+              <li>Otevři v prohlížeči: <code>http://localhost:8069/web/database/manager</code></li>
+              <li>Klikni na <strong>Restore Database</strong>.</li>
+              <li><strong>Master Password</strong> — heslo z <code>config\odoo.conf</code> (hodnota <code>admin_passwd</code>).</li>
+              <li><strong>File</strong> — vyber stažený <code>.zip</code> soubor přímo bez rozbalování.</li>
+              <li><strong>Database Name</strong> — zvol název, např. <code>odoo_staging</code>.</li>
+              <li>Zaškrtni <strong>"This database is a copy"</strong>.</li>
+              <li>Zaškrtni <strong>"Neutralize the database"</strong> (pokud je volba k dispozici) — deaktivuje e-mailové servery, cron joby a platební brány přímo při importu. Doporučujeme zaškrtnout vždy, i když byla záloha neutralizována při stažení z Odoo.sh.</li>
+              <li>Klikni na <strong>Continue</strong> a počkej — import může trvat i několik minut podle velikosti.</li>
+            </ol>
+            <div class="box box-tip"><strong>Proč nerozbalovat?</strong>
+              Odoo Database Manager umí importovat přímo .zip soubor — rozbalí ho sám,
+              nahraje SQL dump i filestore (přílohy, obrázky) automaticky.</div>
+
+            <p><strong>3) Ověření:</strong></p>
+            <p>Otevři <code>http://localhost:8069</code> a na přihlašovací stránce vyber databázi
+              <code>odoo_staging</code>. Přihlas se svými přihlašovacími údaji z Odoo.sh
+              (neutralizace hesla nemění).</p>
+
+            <div class="box box-ok"><strong>Hotovo, když:</strong> Vidíš data z Odoo.sh zálohy v lokálním prostředí,
+              e-maily se neodesílají a cron joby jsou vypnuté.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-label">Fáze 9 — Oprava přístupu po importu</div>
+
+        <div class="step" id="win-s12">
+          <div class="step-header" onclick="toggle('win-s12')">
+            <div class="step-num amber">12</div>
+            <div class="step-info">
+              <div class="step-name">Vypnutí 2FA — pokud tě TOTP zablokuje po importu</div>
+              <div class="step-hint">Záloha přináší TOTP secret, tvůj autentikátor ho nezná</div>
+            </div>
+            <div class="step-right">
+              <div class="step-cb" onclick="check(event,'win-s12')"></div>
+              <div class="step-arrow">▶</div>
+            </div>
+          </div>
+          <div class="step-body">
+            <div class="box box-warn"><strong>Proč k tomu dochází?</strong>
+              Importovaná záloha obsahuje zapnuté 2FA (TOTP) pro uživatelský účet. Po importu tvůj mobilní autentikátor nezná nový TOTP secret — přihlášení selže na druhém kroku.
+              Neutralizace tuto vazbu neresetuje.</div>
+
+            <p><strong>1) Spusť Odoo shell</strong> (nahraď <code>NAZEV_DATABAZE</code> skutečným názvem, např. <code>odoo_staging</code>):</p>
+            <div class="cmd"><span class="c"># Pokud stack neběží:</span>
+docker compose run --rm -it web odoo shell -d NAZEV_DATABAZE
+
+<span class="c"># Pokud stack již běží:</span>
+docker compose exec -it web odoo shell -d NAZEV_DATABAZE</div>
+
+            <p><strong>2) V Python konzoli zadej řádky jeden po druhém</strong> (Enter po každém — nevkládej více řádků najednou):</p>
+            <div class="cmd">u = env["res.users"].search([("login", "=", "tvuj@email.cz")], limit=1)</div>
+            <div class="cmd">u.sudo().write({"totp_secret": False})</div>
+            <div class="cmd">u.sudo()._revoke_all_devices()</div>
+            <div class="cmd">env.cr.commit()</div>
+            <div class="cmd">u.totp_enabled  <span class="c"># ověření — musí vrátit False</span></div>
+            <div class="cmd">exit()</div>
+
+            <div class="box box-danger"><strong>env.cr.commit() je povinný!</strong>
+              Bez commit() se změna po zavření shellu automaticky odroluje zpět.
+              Nesouvisí s Gitem — zapisuje transakci do PostgreSQL.</div>
+
+            <p><strong>3) Přihlas se jen heslem</strong> — formulář bude vyžadovat pouze e-mail a heslo.</p>
+
+            <p><strong>Login nenalezen?</strong> Ověř přesný tvar přihlašovacího e-mailu:</p>
+            <div class="cmd">env["res.users"].search([("login", "ilike", "tvoje%")]).mapped("login")</div>
+
+            <div class="box box-ok"><strong>Hotovo, když:</strong> <code>u.totp_enabled</code> vrátí <code>False</code> a přihlášení do lokální databáze funguje bez autentikátoru.</div>
           </div>
         </div>
       </div>
@@ -1777,19 +2062,20 @@ docker compose exec web odoo -d odoo18_project_test -i web_enterprise --stop-aft
             <hr class="sep">
             <p><strong>Každodenní příkazy pro Odoo (stejné jako na macOS):</strong></p>
             <div class="cmd"><span class="c"># Spuštění Odoo</span>
-docker compose up -d
+              docker compose up -d
 
-<span class="c"># Zastavení Odoo — BEZPEČNÉ, data zůstanou zachována</span>
-docker compose down
+              <span class="c"># Zastavení Odoo — BEZPEČNÉ, data zůstanou zachována</span>
+              docker compose down
 
-<span class="c"># Zobrazení stavu kontejnerů</span>
-docker compose ps
+              <span class="c"># Zobrazení stavu kontejnerů</span>
+              docker compose ps
 
-<span class="c"># Sledování logů Odoo v reálném čase (ukončit: Ctrl+C)</span>
-docker compose logs -f web
+              <span class="c"># Sledování logů Odoo v reálném čase (ukončit: Ctrl+C)</span>
+              docker compose logs -f web
 
-<span class="c"># Restart po změně konfiguračních souborů</span>
-docker compose down && docker compose up -d</div>
+              <span class="c"># Restart po změně konfiguračních souborů</span>
+              docker compose down && docker compose up -d
+            </div>
             <div class="box box-danger"><strong>Toto smaže všechna data — používej jen záměrně:</strong>
               <code>docker compose down -v</code> — parametr -v smaže i datové svazky včetně celé databáze. Bez
               parametru -v jsou data v bezpečí.
